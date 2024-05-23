@@ -1,0 +1,3 @@
+class Library:
+    # list of customers?, list of employees?, list of books, list of authors, list of bookings?, list of check-outs?, list of returnings?, stock
+    ...

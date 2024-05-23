@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Chicken Joe's Library</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="top-container">
+        <header>
+            <h1>Chicken Joe's Library</h1>
+        </header>
+    </div>
+
+    <div class="middle-container">
+        <div class="left-content-container">
+            <div class="filter-list-container">
+                <div class="filter-container">
+                    <h2 class="filter-title">Autor</h2>
+                    <input type="checkbox" name="author1" id="author1" value="Autor 1">
+                    <label for="author1">Autor 1</label><br/>
+                    <input type="checkbox" name="author2" id="author2" value="Autor 2">
+                    <label for="author2">Autor 2</label><br/>
+                    <input type="checkbox" name="author3" id="author3" value="Autor 3">
+                    <label for="author3">Autor 3</label><br/>
+                </div>
+
+                <div class="filter-container">
+                    <h2 class="filter-title">Alguma coisa</h2>
+                    <input type="checkbox" name="coisa1" id="coisa1" value="Coisa 1">
+                    <label for="coisa1">Coisa 1</label><br/>
+                    <input type="checkbox" name="coisa2" id="coisa2" value="Coisa 2">
+                    <label for="coisa2">Coisa 2</label><br/>
+                    <input type="checkbox" name="coisa3" id="coisa3" value="Coisa 3">
+                    <label for="coisa3">Coisa 3</label><br/>
+                </div>
+
+                <form action="#">
+                    <button class="filter-button">Filtrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="center-content-container">
+            <div class="top-center-content-container">
+                <div class="searchbox-container">
+                    <form action="#">
+                        <input type="text" placeholder="Busque um livro por título, autor ou ISBN">
+                        <button type="submit">
+                            <img src="../img/lupa.png" alt="search" class="search-icon">
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="leftover-center-content-container">
+                <div class="book-list-container">
+                    <div class="book-container">
+                        <a href="#">
+                            <img src="../img/book.jpg" alt="book photo" class="book-image">
+                            <h3 class="book-title" title="Título do Livro">Título do Livro</h3>
+                            <p class="book-description" title="Descrição do ivro">Descrição do ivro</p>
+                            <button class="book-button">Reservar</button>
+                        </a>
+                    </div>
+
+                    <div class="book-container">
+                        <a href="#">
+                            <img src="../img/book.jpg" alt="book photo" class="book-image">
+                            <h3 class="book-title">Título do Livro</h3>
+                            <p class="book-description">Descrição do livro</p>
+                            <button class="book-button">Reservar</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-content-container">
+            <div class="lateral-navbar-container">
+                <ul>
+                    <li>
+                        <a href="index.html">
+                            <img src="../img/botao-de-inicio.png" alt="home icon" class="nav-icon">
+                            <span class="nav-text">Início</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="../img/livro.png" alt="books icon" class="nav-icon">
+                            <span class="nav-text">Livros</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-container">
+        <footer>
+            <span>Copyright &copy; 2024 Cadu's Supermarkets, Ltda. All rights reserved.</span>
+        </footer>
+    </div>
+    <!--
+    <main>
+        <div class="content">
+            <aside>
+                <nav>
+                    <div class="aside-navbar">
+                        <ul>
+                            <li>
+                                <a href="index.html">
+                                    <img src="#" alt="home icon" class="nav-icon">
+                                    <span class="nav-text">Home</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <img src="#" alt="books icon" class="nav-icon">
+                                    <span class="nav-text">Livros</span>
+                                </a>
+                            </li>
+                            <li>
+                                <div class="profile-dropdown">
+                                    <a href="#">
+                                        <img src="#" alt="profile icon" class="nav-icon">
+                                        <span class="nav-text">Perfil</span>
+                                    </a>
+                                    <div class="dropdown-content">
+                                        <ul>
+                                            <li>
+                                                <a href="#">Editar perfil</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Acompanhar empréstimos</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <section>
+                <div class="main-content">
+                    <div class="search-box">
+                        <span class="search-placeholder">Busque um livro por título, autor ou ISBN</span>
+                        <img src="#" alt="search">
+                    </div>
+
+                    <div class="books-list">
+                        <div class="book">
+                            <img src="#" alt="book photo">
+                            <h3 class="book-title">Título do Livro</h3>
+                            <p class="book-description">Descrição do Livro</p>
+                            <button>Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside>
+                <div class="aside-filters">
+                    <div class="filter">
+                        <h2 class="filter-title">Autor</h2>
+                        <input type="checkbox" name="author1" id="author1" value="Autor 1">
+                        <label for="author1">Autor 1</label>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main> -->
+</body>
+</html>
