@@ -12,5 +12,4 @@ class Author:
         self.books.append(book)
 
     def remove_book_from_author(self, book):
-        # book_index = self.books.index(book)
-        self.books.remove(book)
+        if book in self.books: self.books.remove(book)
