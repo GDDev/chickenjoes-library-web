@@ -1,2 +1,2 @@
 class Stock:
-    ...
+    books = []

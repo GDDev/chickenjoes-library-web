@@ -277,14 +277,19 @@ header h1{
 .lateral-navbar-container{
     background-color: var(--secundary-color);
     height: 60%;
-    width: 60%;
+    width: 3%;
     box-shadow: rgba(0, 50, 100, .8) 0 .1rem .3rem .05em;
     border-radius: 5rem;
     padding: 2rem 0;
+    transition: all 0.3s ease-in-out;
+    position: fixed;
+    top: 10%;
+    right: 1.5%;
+    cursor: pointer;
 }
 
 .lateral-navbar-container:hover{
-    width: 80%;
+    width: 5%;
 }
 
 .lateral-navbar-container ul li:hover .nav-text{
@@ -327,6 +332,7 @@ footer{
 
 footer span{
     font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
 /*
