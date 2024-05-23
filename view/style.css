@@ -178,6 +178,10 @@ header h1{
     border: .2rem inset #000;
 }
 
+.searchbox-container form button:active, .book-button:active, .filter-button:active{
+    transform: translateY(.1rem);
+}
+
 .search-icon{
     height: 1.5rem;
     width: 1.5rem;
@@ -207,6 +211,11 @@ header h1{
     width: 40%;
     height: 50%;
     border-radius: 1rem;
+}
+
+.book-container:hover{
+    transform: scale(1.025);
+    transition: all .1s ease-in-out;
 }
 
 .book-container a{
@@ -258,6 +267,11 @@ header h1{
     margin-bottom: 1rem;
 }
 
+.book-button:hover, .filter-button:hover{
+    background-color: var(--secundary-color);
+    color: var(--main-color);
+}
+
 .right-content-container{
     /* background-color: rgb(255,200,255); */
     height: inherit;
@@ -274,6 +288,11 @@ header h1{
     visibility: hidden;
 }
 
+.nav-icon:active, .nav-text:active{
+    transform: scale(.9);
+    transition: all .1s ease-in-out;
+}
+
 .lateral-navbar-container{
     background-color: var(--secundary-color);
     height: 60%;
@@ -281,15 +300,14 @@ header h1{
     box-shadow: rgba(0, 50, 100, .8) 0 .1rem .3rem .05em;
     border-radius: 5rem;
     padding: 2rem 0;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.2s ease-in-out;
     position: fixed;
-    top: 10%;
-    right: 1.5%;
+    right: 2rem;
     cursor: pointer;
 }
 
 .lateral-navbar-container:hover{
-    width: 5%;
+    width: 4%;
 }
 
 .lateral-navbar-container ul li:hover .nav-text{
@@ -332,7 +350,6 @@ footer{
 
 footer span{
     font-size: 1rem;
-    transition: all 0.3s ease;
 }
 
 /*
