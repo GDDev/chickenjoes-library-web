@@ -9,16 +9,12 @@ class Library:
     # list of customers?, list of employees?, list of books, list of authors, list of bookings?, list of check-outs?, list of returnings?, stock
     customers = []
     books = []
-    authors = []
     bookings = []
     checkouts = []
     devolutions = []
 
     def __init__(self):
         # TODO: get all info from DB
-        pass
-
-    def validate_new_author_code(self, new_code):
         pass
 
     def generate_new_inside_code_for_author(self):
@@ -46,14 +42,21 @@ class Library:
     def create_author(self, name, nacionality, education, description):
         author = Author(name, nacionality, education, description)
         # TODO: deal with DB insertion
-        self.authors.append(author)
-
         return author
 
-    # Defines a function to find all authors with a name
+    # Defines a function to get all existing authors
+    def get_all_authors(self):
+        all_authors = []
+        for book in self.books:
+            for author in book.authors:
+                if author not in all_authors: all_authors.append(author)
+        return all_authors
+
+    # Defines a function to find all authors by a name
     def find_authors_by_name(self, name):
         found_authors = []
-        for author in self.authors:
+        authors = self.get_all_authors()
+        for author in authors:
             if name == author.name: found_authors.append(author)
         return found_authors
     
@@ -61,7 +64,6 @@ class Library:
     def delete_author(self, author):
         for book in self.books:
             if book.author == author: book.remove_author_from_book(author)
-        self.authors.remove(author)
 
     # Defines a function to validate if the authors passed thru args are legit
     def validate_authors_in_args(self, authors):
@@ -89,8 +91,7 @@ class Library:
 
     # Defines a funtion to delete a book
     def delete_book(self, book):
-        for author in self.authors: 
-            if author.book == book: author.remove_book_from_author(book)
+        # TODO: deal with DB
         self.books.remove(book)
 
     def check_customer_open_bookings(self, customer):
