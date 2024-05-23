@@ -15,4 +15,7 @@ class Book:
         self.isbn = isbn
 
     def add_author_to_book(self, author):
-        self.authors.append(author)    
+        self.authors.append(author)
+
+    def remove_author_from_book(self, author):
+        if author in self.authors: self.authors.remove(author)    
