@@ -18,9 +18,6 @@ class Library:
         # TODO: get all info from DB
         pass
 
-    def generate_new_inside_code_for_author(self):
-        pass
-
     def validate_new_book_code(self, new_code):
         pass
 
@@ -28,16 +25,14 @@ class Library:
         pass
 
     def validate_new_customer_code(self, new_code):
-        while True:
-            for customer in self.customers:
-                if new_code == customer.inside_code:
-                    new_code += str(1)
-                else:
-                    return True
+        for customer in self.customers:
+            if new_code == customer.inside_code: return False
 
     def generate_new_inside_code_for_customer(self):
-        code = f'CUS{datetime.now().year}{(datetime.now().timestamp())}'
-        return code
+        while True:
+            code = f'CUS{datetime.now().year}{(datetime.now().timestamp())}'
+            if self.validate_new_customer_code: return code
+            else: code += str(1)
 
     # Defines a function to create an author
     def create_author(self, name, nacionality, education, description):
