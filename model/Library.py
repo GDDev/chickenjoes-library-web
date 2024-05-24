@@ -3,6 +3,7 @@ from datetime import datetime
 from .Author import Author
 from .Book import Book
 from .Customer import Customer
+from .Status import Status
 
 # Class to manage the Library itself
 class Library:
@@ -94,18 +95,6 @@ class Library:
         # TODO: deal with DB
         self.books.remove(book)
 
-    def check_customer_open_bookings(self, customer):
-        pass
-
-    def check_customer_open_checkouts(self, customer):
-        pass
-
-    def check_customer_unpaid_fines(self, customer):
-        pass
-
-    def check_if_customer_can_be_deleted(self, customer):
-        return self.check_customer_open_bookings(customer) and self.check_customer_open_checkouts(customer) and self.check_customer_unpaid_fines(customer)
-
     def create_booking(self, booking):
         self.bookings.append(booking)
     def delete_booking(self, booking):
@@ -128,5 +117,5 @@ class Library:
         self.customers.append(customer)
 
     def delete_customer(self, customer):
-        if self.check_if_customer_can_be_deleted(customer): self.customers.remove(customer)
+        if customer.check_if_customer_can_be_deleted(): self.customers.remove(customer)
     

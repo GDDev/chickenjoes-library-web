@@ -7,3 +7,5 @@ from . import Devolution
 from . import Email
 from . import Fine
 from . import Phone
+from . import Status
+from .Status import validate_status_enum

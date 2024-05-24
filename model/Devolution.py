@@ -1,9 +1,11 @@
+from .Status import validate_status_enum
+
 class Devolution:
     # status, devolution date, check-out id, list of returned book
     returned_books = []
 
     def __init__(self, status, devolution_date, checkout_id):
-        self.status = status
+        self.status = validate_status_enum(status)
         self.devolution_date = devolution_date
         self.checkout_id = checkout_id
 
