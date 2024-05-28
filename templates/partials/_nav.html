@@ -1,0 +1,30 @@
+{% load static %}
+
+<nav class="lateral-navbar-container">
+    <ul>
+        <li>
+            <a href="login/">
+                <img src="{% static 'assets/img/do-utilizador.png'%}" alt="profile icon" class="nav-icon">
+                <span class="nav-text">Perfil</span>
+            </a>
+        </li>
+        <li>
+            <a href="books-to-book/">
+                <img src="{% static 'assets/img/carrinho.png'%}" alt="cart icon" class="nav-icon">
+                <span class="nav-text">Carrinho</span>
+            </a>
+        </li>
+        <li>
+            <a href="">
+                <img src="{% static 'assets/img/botao-de-inicio.png'%}" alt="home icon" class="nav-icon">
+                <span class="nav-text">Início</span>
+            </a>
+        </li>
+        <li>
+            <a href="bookings/">
+                <img src="{% static 'assets/img/livro.png'%}" alt="books icon" class="nav-icon">
+                <span class="nav-text">Reservas</span>
+            </a>
+        </li>
+    </ul>
+</nav>
