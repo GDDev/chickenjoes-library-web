@@ -8,7 +8,12 @@
     {% include "partials/_header.html" %}
 
     <main class="middle-container">
+        {% include "partials/_messages.html" %}
         {% block content %}{% endblock content %}
+
+        <aside class="right-content-container">
+            {% include "partials/_nav.html" %}
+        </aside>
     </main>
 
     {% include "partials/_footer.html" %}

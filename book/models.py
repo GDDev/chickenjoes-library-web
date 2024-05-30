@@ -2,6 +2,7 @@ from django.db import models
 import os
 from PIL import Image
 from django.conf import settings
+from django.utils.text import slugify
 
 class Author(models.Model):
     name = models.CharField(max_length=255)
@@ -27,6 +28,8 @@ class Book(models.Model):
     authors = models.ManyToManyField(Author, related_name='books')
     image = models.ImageField(upload_to='book_images/%Y/%m/', blank=True, null=True)
 
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
     @staticmethod
     def resize_image(img, new_height):
         img_full_path = os.path.join(settings.MEDIA_ROOT, img.name)
@@ -42,6 +45,9 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         if not self.edition_date:
             self.edition_date = self.publication_date
+        if not self.slug:
+            slug = f'{slugify(self.title)}'
+            self.slug = slug
 
         super().save(*args, **kwargs)
 

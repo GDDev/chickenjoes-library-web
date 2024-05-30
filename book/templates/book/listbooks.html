@@ -14,7 +14,7 @@
             <div class="book-list-container">
                 {% for book in books %}
                     <div class="book-container">
-                        <a href="#">
+                        <a href="{{ book.slug }}">
                             {% if book.image %}
                                 <img src="{{  book.image.url }}" alt="{{ book.title }}" class="book-image">
                             {% else %}
@@ -22,7 +22,7 @@
                             {% endif %}
                             <h3 class="book-title" title="{{ book.title }}">{{ book.title }}</h3>
                             <p class="book-description" title="{{ book.description }}">{{ book.description }}</p>
-                            <button class="book-button">Reservar</button>
+                            <button type="submit" class="book-button">Reservar</button>
                         </a>
                     </div>
                 {% endfor %}
@@ -30,7 +30,4 @@
         </div>
     </section>
 
-    <aside class="right-content-container">
-        {% include "partials/_nav.html" %}
-    </aside>
 {% endblock content %}

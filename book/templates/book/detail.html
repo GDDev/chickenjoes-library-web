@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="{% url 'book:addtocart' %}">
+    {{ book.title }}
+    <button type="submit">Reservar</button>
+</form>
+
+{% endblock content %}

@@ -3,25 +3,25 @@
 <nav class="lateral-navbar-container">
     <ul>
         <li>
-            <a href="login/">
+            <a href="{% url "user_profile:login" %}">
                 <img src="{% static 'assets/img/do-utilizador.png'%}" alt="profile icon" class="nav-icon">
                 <span class="nav-text">Perfil</span>
             </a>
         </li>
         <li>
-            <a href="books-to-book/">
+            <a href="{% url "book:cart" %}">
                 <img src="{% static 'assets/img/carrinho.png'%}" alt="cart icon" class="nav-icon">
                 <span class="nav-text">Carrinho</span>
             </a>
         </li>
         <li>
-            <a href="">
+            <a href="{% url 'book:listbooks' %}">
                 <img src="{% static 'assets/img/botao-de-inicio.png'%}" alt="home icon" class="nav-icon">
                 <span class="nav-text">Início</span>
             </a>
         </li>
         <li>
-            <a href="bookings/">
+            <a href="{% url 'booking:finishbooking' %}">
                 <img src="{% static 'assets/img/livro.png'%}" alt="books icon" class="nav-icon">
                 <span class="nav-text">Reservas</span>
             </a>
