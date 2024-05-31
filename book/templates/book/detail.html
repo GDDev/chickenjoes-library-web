@@ -2,9 +2,10 @@
 
 {% block content %}
 
-<form action="{% url 'book:addtocart' %}">
+<form action="{% url 'book:addtocart' %}" method="get">
+    <input type="hidden" name="id" value="{{ book.id }}">
     {{ book.title }}
-    <button type="submit">Reservar</button>
+    <input type="submit" value="Reservar">
 </form>
 
 {% endblock content %}

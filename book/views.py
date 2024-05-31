@@ -22,7 +22,8 @@ class DetailBook(DetailView):
 class AddToCart(View):
     def get(self, *args, **kwargs):
         http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
-        id = self.request.GET.get('vid')
+        print(self.request)
+        id = self.request.GET.get('id')
         if not id:
             messages.error(
                 self.request,
