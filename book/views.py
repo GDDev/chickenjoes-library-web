@@ -6,6 +6,7 @@ from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
 from . import models
+from django.core import serializers
 
 class ListBooks(ListView):
     model = models.Book
@@ -44,7 +45,7 @@ class AddToCart(View):
         book_publisher = book.publisher
         book_edition_number = book.edition_number
         book_isbn = book.isbn
-        book_authors = book.authors
+        book_authors = serializers.serialize("json", book.authors.all()) #
         book_image = book.image
         book_slug = book.slug
 
@@ -80,8 +81,7 @@ class AddToCart(View):
 
         self.request.session.save()
 
-        # return redirect(http_referer)
-        return HttpResponse(self.request.session['cart'])
+        return redirect(http_referer)
 
 class RemoveFromCart(View):
     def get(self, *args, **kwargs):
@@ -98,8 +98,7 @@ class RemoveFromCart(View):
 
 class Cart(View):
     def get(self, *args, **kwargs):
-        # contexto = {
-        #     'carrinho': self.request.session.get('carrinho', {})
-        # }
-        # return render(self.request, 'produto/carrinho.html', contexto)
-        return HttpResponse(self.request.session['cart'])
+        context = {
+            'cart': self.request.session.get('cart', {})
+        }
+        return render(self.request, 'book/cart.html', context)
