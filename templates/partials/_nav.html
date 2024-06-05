@@ -3,7 +3,7 @@
 <nav class="lateral-navbar-container">
     <ul>
         <li>
-            <a href="{% url "user_profile:login" %}">
+            <a href="{% url "userprofile:createuser" %}">
                 <img src="{% static 'assets/img/do-utilizador.png'%}" alt="profile icon" class="nav-icon">
                 <span class="nav-text">Perfil</span>
             </a>
@@ -27,6 +27,14 @@
                 <span class="nav-text">Reservas</span>
             </a>
         </li> {% endcomment %}
-        </li>
+
+        {% if request.session.logged_user %}
+            <li>
+                <a href="{% url "userprofile:logout" %}">
+                    <img src="{% static 'assets/img/logout.png'%}" alt="logout icon" class="nav-icon">
+                    <span class="nav-text">Sair</span>
+                </a>
+            </li>
+        {% endif %}
     </ul>
 </nav>
