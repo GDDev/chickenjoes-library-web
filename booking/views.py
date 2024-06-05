@@ -171,7 +171,7 @@ class Return(View):
                 data['status'], 
                 data['_id']
             )
-            booking = booking.returning()
+            booking = booking.returning(user['_id'])
 
         return redirect('booking:list')
     

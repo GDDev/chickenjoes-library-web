@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from bson import ObjectId
+from user_profile.models import UserProfile
 from utils.dbconnect import connect
 
 db = connect()
@@ -34,9 +35,11 @@ class Booking:
         self.save()
         return self
     
-    def returning(self):
+    def returning(self, customer_id):
         self.status = 'devolvido'
         self.return_date = datetime.now()
+        if self.estimated_return_date and self.return_date > self.estimated_return_date:
+            UserProfile.fine(customer_id)
         self.save()
         return self
 

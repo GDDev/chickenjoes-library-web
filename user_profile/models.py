@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from bson import ObjectId
 from django.forms import ValidationError
 from utils.validacpf import valida_cpf
@@ -5,7 +6,7 @@ from utils.dbconnect import connect
 
 db = connect()
 
-class UserProfile():
+class UserProfile:
     def __init__(self, inside_code, birth_date, cpf, first_name, last_name, username, email, password, image=None, id=None):
         self.inside_code = inside_code
         self.first_name = first_name
@@ -19,6 +20,14 @@ class UserProfile():
         self.image = image
         self.id = id or ObjectId()
 
+    @staticmethod
+    def fine(user_id):
+        if isinstance(user_id, str):
+            user_id = ObjectId(user_id)
+        user = db.users.find_one({'_id': user_id})
+        if user:
+            Fine(user_id).save()
+            
     def save(self):
         user_data = {
             '_id': self.id,
@@ -85,3 +94,28 @@ class UserProfile():
     #     verbose_name = 'User'
     #     verbose_name_plural = 'Users'
         
+class Fine:
+    def define_fine_value(self, customer_id):
+        fine = 20.0
+        if isinstance(customer_id, str):
+            customer_id = ObjectId(customer_id)
+        previous_fines = len({db.fines.find({'customer_id': customer_id})})
+        if previous_fines > 0:
+            fine *= previous_fines
+        return fine
+
+    def __init__(self, customer_id, created_date=datetime.now(), fine_value=None, _id=None):
+        self.customer_id = customer_id
+        self.created_date = created_date
+        self.fine_value = fine_value or self.define_fine_value(self.customer_id)
+        self.id = _id or ObjectId()
+
+    def save(self):
+        fine = {
+            '_id': self.id,
+            'customer_id': ObjectId(self.customer_id),
+            'created_date': self.created_date,
+            'fine_value': self.fine_value,
+        }
+        print("SAVE")
+        db.fines.replace_one({'_id': self.id}, fine, upsert=True)
