@@ -16,14 +16,14 @@ Reservar livros
         
         {% include "partials/_cart.html" %}
 
-        {% if request.user.is_authenticated %}
-            <a href="{% url "book:overall" %}">
+        {% if request.session.logged_user %}
+        {% comment %} {% url "book:overall" %} {% endcomment %}
+            <a href="#">
                 Reservar livros
             </a>
         {% else %}
-        {% comment %} {% url "user_profile:create" %} {% endcomment %}
-            <a href="#">
-                Entrar para continuar
+            <a href="{% url "userprofile:createuser" %}">
+                Entre para continuar
             </a>
         {% endif %}
 

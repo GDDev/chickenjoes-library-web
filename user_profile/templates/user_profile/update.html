@@ -14,31 +14,31 @@ Atualizar perfil
                 <p>Informe seus dados atualizados abaixo:</p>
             {% endblock signinheader %}
 
-            <form action="{% url 'userprofile:createuser' %}" method="post">
+            <form action="{% url 'userprofile:update' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="">Usuário</label>
-                    <input type="text" name="" class="form-control" id="inputUsuario" aria-describedby="usuarioHelp" placeholder="Digite seu usuário" value="{{ request.session.logged_user.username }}">
+                    <label for="username">Usuário</label>
+                    <input type="text" name="username" class="form-control" id="username" aria-describedby="usuarioHelp" placeholder="Digite seu usuário" value="{{ request.session.logged_user.username }}" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="">Primeiro nome</label>
-                    <input type="text" name="" class="form-control" id="" value="{{ request.session.logged_user.first_name }}">
+                    <label for="first_name">Nome</label>
+                    <input type="text" name="first_name" class="form-control" id="first_name" value="{{ request.session.logged_user.first_name }}">
                 </div>
                 <div class="form-group">
-                    <label for="">Último nome</label>
-                    <input type="text" name="" class="form-control" id="" value="{{ request.session.logged_user.last_name }}">
+                    <label for="last_name">Sobrenome</label>
+                    <input type="text" name="last_name" class="form-control" id="last_name" value="{{ request.session.logged_user.last_name }}">
                 </div>
                 <div class="form-group">
-                    <label for="">Senha</label>
-                    <input type="password" name="" class="form-control" id="">
+                    <label for="password">Senha</label>
+                    <input type="password" name="password" class="form-control" id="password">
                 </div>
                 <div class="form-group">
-                    <label for="">Confirmar nova senha</label>
-                    <input type="password" name="" class="form-control" id="">
+                    <label for="confirmPassword">Confirmar nova senha</label>
+                    <input type="password" name="confirmPassword" class="form-control" id="confirmPassword">
                 </div>
                 <div class="form-group">
-                    <label for="">E-mail</label>
-                    <input type="email" name="" class="form-control" id="" value="{{ request.session.logged_user.email }}">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="email" class="form-control" id="email" value="{{ request.session.logged_user.email }}">
                 </div>
 
                 <div class="row">

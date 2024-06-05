@@ -20,8 +20,8 @@
             {{ book.book_title }}
             {{ book.book_edition_number }}
             </a>
-            <a href="{% url 'book:removefromcart' %}?id={{ book.book_id }}">
-                <i>X</i>
+            <a class="ml-3" href="{% url 'book:removefromcart' %}?id={{ book.book_id }}">
+                <i class="fas fa-times-circle text-danger" aria-hidden="true">X</i>
             </a>
         </td>
     </tr>

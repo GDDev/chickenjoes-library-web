@@ -1,3 +1,4 @@
+from bson import ObjectId
 from django.http.request import HttpRequest as HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
@@ -106,8 +107,58 @@ class Create(BasePerfil):
         self.request.session.save()
         return redirect('user_profile:createuser')
 
-# class Atualizar(View):
-#     ...
+class Update(BasePerfil):
+    def post(self, *args, **kwargs):        
+        username = self.request.POST.get('username')
+        print(username)
+        password = self.request.POST.get('password')
+        confirmPassword = self.request.POST.get('confirmPassword')
+        email = self.request.POST.get('email')
+        first_name = self.request.POST.get('first_name')
+        last_name = self.request.POST.get('last_name')
+
+        if self.request.session.get('logged_user'):
+            user = db.users.find_one({'username': username})
+            if user:
+                if password:
+                    if confirmPassword and password == confirmPassword:
+                        # TODO: encrypt password
+                        user['password'] = password
+                    else:
+                        return redirect('userprofile:update')
+                if confirmPassword and not password:
+                    return redirect('userprofile:update')    
+                                    
+                user['email'] = email
+                user['first_name'] = first_name
+                user['last_name'] = last_name
+                self.request.session['logged_user'] = user
+                self.request.session['logged_user']['_id'] = str(user.get('_id'))
+                self.request.session.save()
+
+                user = models.UserProfile(
+                    user['inside_code'],
+                    user['birth_date'],
+                    user['cpf'],
+                    first_name,
+                    last_name,
+                    username,
+                    email,
+                    user['password'],
+                    id=ObjectId(user.get('_id'))                  
+                )
+                user.save()                
+
+        messages.success(
+            self.request,
+            'Seu cadastro foi atualizado com sucesso.'
+        )
+
+        self.request.session['cart'] = self.cart
+        self.request.session.save()
+        return redirect('userprofile:update')
+
+# TODO: Delete User
 
 class Login(View):
     def post(self, *args, **kwargs):

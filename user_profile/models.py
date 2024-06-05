@@ -5,15 +5,13 @@ from utils.dbconnect import connect
 db = connect()
 
 class UserProfile():
-    def __init__(self, inside_code, birth_date, cpf, first_name, last_name, username, email, password, last_login, date_joined, image=None, id=None):
+    def __init__(self, inside_code, birth_date, cpf, first_name, last_name, username, email, password, image=None, id=None):
         self.inside_code = inside_code
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
         self.email = email
         self.password = password
-        self.last_login = last_login
-        self.date_joined = date_joined
         self.user_type ='customer'
         self.birth_date = birth_date
         self.cpf = cpf
@@ -32,8 +30,6 @@ class UserProfile():
             'birth_date': self.birth_date,
             'cpf': self.cpf,
             'image': self.image,
-            'last_login': self.last_login,
-            'date_joined': self.date_joined,
             'user_type': self.user_type
         }
     

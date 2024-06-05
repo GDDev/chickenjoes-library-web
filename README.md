@@ -1,6 +1,6 @@
 <h1>Here is a little guide on how to run this app</h1>
 
-To begin, it's recommended you create a virtual environment:
+To begin, it's advised that you create a virtual environment:
 ```
 python -m venv .venv
 ```
