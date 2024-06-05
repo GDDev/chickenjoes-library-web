@@ -1,4 +1,4 @@
-<h1>Here is a little guide on how to implement the backend</h1>
+<h1>Here is a little guide on how to run this app</h1>
 
 To begin, it's recommended you create a virtual environment:
 ```
