@@ -19,13 +19,23 @@ class Booking(models.Model):
     estimated_checkout_date = models.DateTimeField()
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
 
+<<<<<<< HEAD
     def __str__(self):
+=======
+    def __str__(self) -> str:
+>>>>>>> b68ad8231849ff80a4984ebe22fc11694594f8ec
         return self.protocol
 
 class BookBooking(models.Model):
     booking = models.ForeignKey(Booking, related_name='books', on_delete=models.CASCADE)
     book = models.ForeignKey(Book, related_name='bookings', on_delete=models.SET_NULL, null=True)
+<<<<<<< HEAD
 
     def __str__(self):
         if self.book:
             return f'{self.book.title} em {self.booking}'
+=======
+    
+    def __str__(self) -> str:
+        return f'{self.book.title} em {self.booking}'
+>>>>>>> b68ad8231849ff80a4984ebe22fc11694594f8ec

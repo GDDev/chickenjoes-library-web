@@ -1,16 +1,20 @@
 {% extends "base.html" %}
 {% load static %}
+<<<<<<< HEAD
 {% load filters %}
 
 {% block title %}
 Reservar livros
 {% endblock %}
+=======
+>>>>>>> b68ad8231849ff80a4984ebe22fc11694594f8ec
 
 {% block content %}
 
     {% if cart %}
         <h3>Livros para reservar</h3>
         <p>Livros adicionados à reservar.</p>
+<<<<<<< HEAD
         
         {% include "partials/_cart.html" %}
 
@@ -23,6 +27,34 @@ Reservar livros
                 Entrar para continuar
             </a>
         {% endif %}
+=======
+        <table>
+            <tr>
+                <th>Imagem</th>
+                <th>Livro</th>
+            </tr>
+
+            {% for book in cart.values %}
+            <tr>
+                <td>
+                    <img src="{% get_media_prefix %}{{ book.book_image }}">
+                </td>
+                <td>
+                    <a href="{{ book.book_slug }}">
+                    {{ book.book_title }}
+                    </a>
+                    <a href="{% url 'book:removefromcart' %}?id={{ book.book_id }}">
+                        <i>X</i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+        <a href="#">
+            Finalizar a compra
+        </a>
+>>>>>>> b68ad8231849ff80a4984ebe22fc11694594f8ec
 
     {% else %}
         <h3>Livros para reservar</h3>
