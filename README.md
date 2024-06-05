@@ -1,6 +1,23 @@
 <h1>Here is a little guide on how to implement the backend</h1>
 
-<ol>
+To begin, it's recommended you create a virtual environment:
+```
+python -m venv .venv
+```
+
+Then, you can install the requirements for this project:
+```
+pip install -r requirements.txt
+```
+
+Once that's out of the way, you should be able to launch the localhost server:
+```
+python manage.py runserver
+```
+
+Hope this helps 🙃
+
+<!-- <ol>
     <h2>
         <li> To Register a Book:</li>
     </h2>
@@ -15,4 +32,4 @@
     <ul>
         <li>Don't know yet.</li>
     </ul>
-</ol>
+</ol> -->
