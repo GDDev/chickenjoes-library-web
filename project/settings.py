@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 
     'project',
     'book',
-    # 'booking',
+    'booking',
     'user_profile',
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

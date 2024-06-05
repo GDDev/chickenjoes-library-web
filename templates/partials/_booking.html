@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="row">
+    <div class="col">
+        <h3>{{ booking }}</h3>
+
+        <div class="row mt-4">
+            <div class="col-lg-2 font-weight-bold">Número do protocolo:</div>
+            <div class="col-lg-4">{{ booking.protocol }}</div>
+
+            <div class="col-lg-2 font-weight-bold">QTD. Livros:</div>
+            <div class="col-lg-4">{{ booking.total }}</div>
+            <div class="col-lg-2 font-weight-bold">Status:</div>
+            <div class="col-lg-4">{{ booking.status }}</div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <h3>Livros</h3>
+            </div>
+        </div>
+
+        <div class="table-responsive mt-3">
+            <table class="table">
+                <tr>
+                    <th class="d-none d-lg-block">Imagem</th>
+                    <th>Livro</th>
+                    <th>N. Edição</th>
+                </tr>
+
+                {% for book in booking.books %}
+                <tr>
+                    <td class="d-none d-lg-block">
+                        {% if book.image %}
+                            <img class="cart-img" src="{% get_media_prefix %}{{ book.image }}">
+                        {% else %}
+                            <img class="cart-img" src="{% static 'assets/img/default.jpg' %}">
+                        {% endif %}
+                    </td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.edtion_number}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>

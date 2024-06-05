@@ -82,7 +82,6 @@ class DetailBook(View):
     slug_url_kwarg = 'slug'
 
     def get(self, request, slug):
-        # Fetch the book from MongoDB using the slug
         book_data = db.books.find_one({'slug': slug})
         if not book_data:
             return redirect('book:listbooks')

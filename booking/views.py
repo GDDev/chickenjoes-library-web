@@ -1,10 +1,126 @@
-from django.shortcuts import render
+from bson import ObjectId
+from django.shortcuts import render, redirect
 from django.views import View
-from django.http import HttpResponse
+from django.contrib import messages
+from django.urls import reverse
+from book.models import Book
+from utils import utils
+from .models import BookBooking, Booking
 
-class FinishBooking(View):
+from utils.dbconnect import connect
+
+db = connect()
+
+class DispatchLoginRequiredMixin(View):
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.session.get('logged_user'):
+            return redirect('userprofile:login')
+        
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        qs = super().get_queryset()  # type: ignore
+        qs = qs.filter(usuario=self.request.session['logged_user'])
+        return qs
+
+class SaveBooking(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
-        return HttpResponse('BOOKING')
+        user = self.request.session.get('logged_user')
+        if not user:
+            messages.error(
+                self.request,
+                'Você precisa efetuar o login.'
+            )
+            return redirect('userprofile:login')
+        
+        if not self.request.session.get('cart'):
+            messages.error(
+                self.request,
+                'Não há livros para reservar.'
+            )
+            return redirect('book:listbooks')
+        
+        cart = self.request.session.get('cart') or {}
 
-class Detail(View):
-    ...
+        error_msg_estoque = ''
+
+        # for book in cart:
+        #     id = str(book['_id'])
+
+        #     # TODO: Check stock
+
+        #     if error_msg_estoque:
+        #         messages.error(
+        #             self.request,
+        #             error_msg_estoque
+        #         )
+
+        #         self.request.session.save()
+        #         return redirect('book:cart')
+            
+        cart_total = utils.cart_total_qtt(cart)
+        user_total = Booking.get_total_user_books(user['_id'])
+
+        booking = Booking(user.get('_id'))
+        booking.save()
+
+        for book in cart.values():
+            print(book)
+            BookBooking(booking_id=booking.id, book_id=book['book_id']).save()
+            # TODO: Find a better way to do this
+            Book(book['book_title'], book['book_language'], book['book_publication_date'], book['book_pages'], book['book_size'], book['book_publisher'], book['book_isbn'], book['book_inside_code'], False, book['book_edition_date'], book['book_description'], book['book_edition_number'], image=book['book_image'], slug=book['book_slug'], _id=book['book_id']).save()
+        
+        del self.request.session['cart']
+        return redirect('booking:list')
+
+class Detail(DispatchLoginRequiredMixin, View):
+    context_object_name = 'booking'
+    template_name = 'booking/detail.html'
+    pk_url_kwarg = 'id'
+
+    def get(self, request, id):
+        data = db.bookings.find_one({'_id': ObjectId(id)})
+        if not data:
+            return redirect('booking:list')
+        else:
+            booking = Booking(
+                data['customer_id'], 
+                data['protocol'], 
+                data['estimated_checkout_date'], 
+                data['booking_date'], 
+                data['checkout_date'], 
+                data['estimated_return_date'], 
+                data['return_date'], 
+                data['status'], 
+                data['_id']
+            )
+            return render(request, 'booking/detail.html', {'booking': booking})
+
+class List(DispatchLoginRequiredMixin, View):
+    context_object_name = 'bookings'
+    template_name = 'booking/list.html'
+    ordering = ['-id']
+    
+    def get(self, *args, **kwargs):
+        data = db.bookings.find()
+        bookings = []        
+
+        for booking in data:
+            bookings.append(
+                Booking(
+                    booking['customer_id'], 
+                    booking['protocol'], 
+                    booking['estimated_checkout_date'], 
+                    booking['booking_date'], 
+                    booking['checkout_date'], 
+                    booking['estimated_return_date'], 
+                    booking['return_date'], 
+                    booking['status'], 
+                    booking['_id']
+                )
+            )
+
+        context = {
+            self.context_object_name: bookings,
+        }
+        return render(self.request, self.template_name, context)

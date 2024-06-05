@@ -29,8 +29,11 @@ class Author:
         return self.name
 
 class Book:
-    def __init__(self, inside_code, title, language, publication_date, pages, size, publisher, isbn, availability=True, edition_date=None, description='Just another book.', edition_number='N/A', authors=[], image=None, slug=None, _id=None):
-        self.inside_code = inside_code
+    def create_inside_code(self):
+        return f'LIV{self.publication_date.year}{self.isbn}'
+
+    def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description='Just another book.', edition_number='N/A', authors=[], image=None, slug=None, _id=None):
+        self.inside_code = inside_code or self.create_inside_code()
         self.availability = availability
         self.title = title
         self.description = description
@@ -44,7 +47,7 @@ class Book:
         self.isbn = isbn
         self.authors = authors or []
         self.image = image
-        self.slug = slug or slugify(inside_code)
+        self.slug = slug or slugify(isbn)
         self.id = _id or ObjectId()
 
     @staticmethod
@@ -63,6 +66,9 @@ class Book:
         if self.image:
             img_path = os.path.join('media', self.image)
             self.resize_image(img_path, 150)
+
+        if isinstance(self.id, str):
+            self.id = ObjectId(self.id)
 
         book_data = {
             '_id': self.id or ObjectId(),

@@ -1,3 +1,4 @@
+from bson import ObjectId
 from django.forms import ValidationError
 from utils.validacpf import valida_cpf
 from utils.dbconnect import connect
@@ -16,7 +17,7 @@ class UserProfile():
         self.birth_date = birth_date
         self.cpf = cpf
         self.image = image
-        self.id = id
+        self.id = id or ObjectId()
 
     def save(self):
         user_data = {

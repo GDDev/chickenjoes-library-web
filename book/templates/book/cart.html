@@ -17,8 +17,7 @@ Reservar livros
         {% include "partials/_cart.html" %}
 
         {% if request.session.logged_user %}
-        {% comment %} {% url "book:overall" %} {% endcomment %}
-            <a href="#">
+            <a href="{% url "booking:savebooking" %}">
                 Reservar livros
             </a>
         {% else %}
