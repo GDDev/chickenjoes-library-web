@@ -17,9 +17,9 @@
     <h1>{{ book.title }}</h1>
     <p>{{ book.description }}</p>
 
-    {% comment %} {% url 'book:addtocart' %} {% endcomment %}
-    <form action="#" method="get">
+    <form action="{% url 'book:addtocart' %}" method="get">
         <input type="hidden" name="id" value="{{ book.id }}">
+        {{ book.id }}
         {{ book.title }}
         <input type="submit" value="Reservar">
     </form>

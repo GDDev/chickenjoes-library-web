@@ -9,11 +9,16 @@
     {% for book in cart.values %}
     <tr>
         <td>
-            <img src="{% get_media_prefix %}{{ book.book_image }}">
+            {% if book.book_image %}
+                <img src="{% get_media_prefix %}{{ book.book_image }}">
+            {% else %}
+                <img src="{% static 'assets/img/default.jpg'%}" class="book-image">
+            {% endif %}
         </td>
         <td>
-            <a href="{{ book.book_slug }}">
+            <a href="{% url 'book:detail' book.book_slug %}">
             {{ book.book_title }}
+            {{ book.book_edition_number }}
             </a>
             <a href="{% url 'book:removefromcart' %}?id={{ book.book_id }}">
                 <i>X</i>

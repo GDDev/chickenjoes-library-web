@@ -2,7 +2,6 @@
 
 <nav class="lateral-navbar-container">
     <ul>
-        {% comment %} <li>
         <li>
             <a href="{% url "user_profile:login" %}">
                 <img src="{% static 'assets/img/do-utilizador.png'%}" alt="profile icon" class="nav-icon">
@@ -12,9 +11,8 @@
         <li>
             <a href="{% url "book:cart" %}">
                 <img src="{% static 'assets/img/carrinho.png'%}" alt="cart icon" class="nav-icon">
-                <span class="nav-text">Carrinho</span>
+                <span class="nav-text">Reservar</span>
             </a>
-        </li> {% endcomment %}
         </li>
         <li>
             <a href="{% url 'book:listbooks' %}">

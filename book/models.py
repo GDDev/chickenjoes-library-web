@@ -44,8 +44,8 @@ class Book:
         self.isbn = isbn
         self.authors = authors or []
         self.image = image
-        self.slug = slug or slugify(title)
-        self._id = _id or ObjectId()
+        self.slug = slug or slugify(inside_code)
+        self.id = _id or ObjectId()
 
     @staticmethod
     def resize_image(img_path, new_height):
@@ -65,7 +65,7 @@ class Book:
             self.resize_image(img_path, 150)
 
         book_data = {
-            '_id': self._id or ObjectId(),
+            '_id': self.id or ObjectId(),
             'inside_code': self.inside_code,
             'availability': self.availability,
             'title': self.title,
@@ -81,7 +81,7 @@ class Book:
             'image': self.image,
             'slug': self.slug,
         }
-        db.books.replace_one({'_id': self._id}, book_data, upsert=True)
+        db.books.replace_one({'_id': self.id}, book_data, upsert=True)
 
     @staticmethod
     def find_book_by_id(book_id):

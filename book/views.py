@@ -9,24 +9,11 @@ from .models import Book, Author, BookAuthorAssociation
 from django.core import serializers
 from bson.objectid import ObjectId
 
+import pprint
 from django.db.models import Q
 
 from utils.dbconnect import connect
 db = connect()
-
-# def index(request):
-#     return HttpResponse({models.book_collection})
-
-# def add_book(request):
-#     records = {
-#         'title': 'Título'
-#     }
-#     models.book_collection.insert_one(records)
-#     return HttpResponse({models.book_collection})
-
-# def get_all_books(request):
-#     books = models.book_collection.find()
-#     return HttpResponse(books)
 
 class ListBooks(View):
     template_name = 'book/listbooks.html'
@@ -102,6 +89,7 @@ class DetailBook(View):
         else:
             book = Book(
                 inside_code=book_data['inside_code'],
+                availability=book_data['availability'],
                 title=book_data['title'],
                 description=book_data['description'],
                 language=book_data['language'],
@@ -119,85 +107,93 @@ class DetailBook(View):
             return render(request, 'book/detail.html', {'book': book})
 
 
-# class AddToCart(View):
-#     def get(self, *args, **kwargs):
-#         http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
-#         print(self.request)
-#         id = self.request.GET.get('id')
-#         if not id:
-#             messages.error(
-#                 self.request,
-#                 f'Livro não encontrado.{self.request.GET}'
-#             )
-#             return redirect(http_referer)
-#         book = get_object_or_404(models.Book, id=id)
+class AddToCart(View):
+    def get(self, *args, **kwargs):
+        http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
+        id = self.request.GET.get('id')
+        if not id:
+            messages.error(
+                self.request,
+                f'Livro não encontrado.{self.request.GET}'
+            )
+            return redirect(http_referer)
+        id_obj = ObjectId(id)
+        book_data = db.books.find_one({'_id': id_obj})
 
-#         book_id = book.pk
-#         book_inside_code = book.inside_code
-#         book_title = book.title
-#         book_description = book.description
-#         book_language = book.language
-#         book_publication_date = str(book.publication_date)
-#         book_edition_date = str(book.edition_date)
-#         book_pages = book.pages
-#         book_size = book.size
-#         book_publisher = book.publisher
-#         book_edition_number = book.edition_number
-#         book_isbn = book.isbn
-#         book_authors = serializers.serialize("json", book.authors.all()) #
-#         book_image = book.image
-#         book_slug = book.slug
-
-#         book_image = book_image.name if book_image else ''
-
-#         if not self.request.session.get('cart'):
-#             self.request.session['cart'] = {}
-#             self.request.session.save()
-
-#         cart = self.request.session['cart']
-
-#         # if id in cart:
-#         #     cart_qtt = cart[id]['quantity']
-#         #     cart_qtt += 1
-#         # else:
-#         cart[id] = {
-#             'book_id': book_id,
-#             'book_inside_code': book_inside_code,
-#             'book_title': book_title,
-#             'book_description': book_description,
-#             'book_language': book_language,
-#             'book_publication_date': book_publication_date,
-#             'book_edition_date': book_edition_date,
-#             'book_pages': book_pages,
-#             'book_size': book_size,
-#             'book_publisher': book_publisher,
-#             'book_edition_number': book_edition_number,
-#             'book_isbn': book_isbn,
-#             'book_authors': book_authors,
-#             'book_image': book_image,
-#             'book_slug': book_slug,
-#         }
-
-#         self.request.session.save()
-
-#         return redirect(http_referer)
-
-# class RemoveFromCart(View):
-#     def get(self, *args, **kwargs):
-#         http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
-#         id = self.request.GET.get('id')
-#         if not id or not self.request.session.get('cart'):
-#             return redirect(http_referer)
-#         if id not in self.request.session['cart']:
-#             return redirect(http_referer)
+        if not book_data:
+            return redirect(http_referer)
         
-#         del self.request.session['cart'][id]
-#         self.request.session.save()
-#         return redirect(http_referer)       
+        book = Book(
+                inside_code=book_data['inside_code'],
+                availability=book_data['availability'],
+                title=book_data['title'],
+                description=book_data['description'],
+                language=book_data['language'],
+                publication_date=book_data['publication_date'],
+                edition_date=book_data['edition_date'],
+                pages=book_data['pages'],
+                size=book_data['size'],
+                publisher=book_data['publisher'],
+                edition_number=book_data['edition_number'],
+                isbn=book_data['isbn'],
+                image=book_data.get('image'),
+                slug=book_data['slug'],
+                _id=book_data['_id']
+            )
 
-# class Cart(View):
-#     def get(self, *args, **kwargs):
-#         context = {
-#             'cart': self.request.session.get('cart', {})
-#         }
-#         return render(self.request, 'book/cart.html', context)
+        if not self.request.session.get('cart'):
+            self.request.session['cart'] = {}
+            self.request.session.save()
+
+        if id in self.request.session['cart']:
+            return redirect(http_referer)
+
+        cart = self.request.session['cart']
+
+        # TODO: Limit user to 5 books
+        # if id in cart:
+        #     cart_qtt = cart[id]['quantity']
+        #     cart_qtt += 1
+        # else:
+        cart[id] = {
+            'book_id': id,
+            'book_inside_code': book.inside_code,
+            'book_availability': book.availability,
+            'book_title': book.title,
+            'book_description': book.description,
+            'book_language': book.language,
+            'book_publication_date': book.publication_date,
+            'book_edition_date': book.edition_date,
+            'book_pages': book.pages,
+            'book_size': book.size,
+            'book_publisher': book.publisher,
+            'book_edition_number': book.edition_number,
+            'book_isbn': book.isbn,
+            'book_image': book.image,
+            'book_slug': book.slug,
+        }
+
+        self.request.session.save()
+        pprint.pp(self.request.session.get('cart'))
+        print()
+        return redirect(http_referer)
+
+class RemoveFromCart(View):
+    def get(self, *args, **kwargs):
+        http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
+        id = self.request.GET.get('id')
+        if not id or not self.request.session.get('cart'):
+            return redirect(http_referer)
+        if id not in self.request.session['cart']:
+            return redirect(http_referer)
+        
+        del self.request.session['cart'][id]
+        self.request.session.save()
+        return redirect(http_referer)       
+
+class Cart(View):
+    def get(self, *args, **kwargs):
+        context = {
+            'cart': self.request.session.get('cart', {})
+        }
+        return render(self.request, 'book/cart.html', context)

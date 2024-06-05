@@ -192,7 +192,6 @@ header h1{
 }
 
 .leftover-center-content-container{
-    /* background-color: aqua; */
     height: 85%;
     width: inherit;
     display: flex;
@@ -214,6 +213,7 @@ header h1{
 }
 
 .book-container{
+    background-color: #fff;
     box-shadow: rgba(0, 50, 100, .8) 0 .1rem .3rem .05em;
     width: 25%;
     height: 50%;
