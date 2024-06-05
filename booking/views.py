@@ -1,4 +1,3 @@
-import pprint
 from bson import ObjectId
 from django.shortcuts import render, redirect
 from django.views import View
@@ -66,7 +65,6 @@ class SaveBooking(DispatchLoginRequiredMixin, View):
         booking.save()
 
         for book in cart.values():
-            print(book)
             BookBooking(booking_id=booking.id, book_id=book['book_id']).save()
             # TODO: Find a better way to do this
             Book(book['book_title'], book['book_language'], book['book_publication_date'], book['book_pages'], book['book_size'], book['book_publisher'], book['book_isbn'], book['book_inside_code'], False, book['book_edition_date'], book['book_description'], book['book_edition_number'], image=book['book_image'], slug=book['book_slug'], _id=book['book_id']).save()
@@ -97,10 +95,39 @@ class Detail(DispatchLoginRequiredMixin, View):
                 data['_id']
             )
             books = [db.books.find_one({'_id': ObjectId(book['book_id'])}) for book in books_ids]
-            print(books)
 
             return render(request, 'booking/detail.html', {'booking': booking, 'books': books})
 
+class CheckOut(View):
+    def get(self, *args, **kwargs):
+        user = self.request.session.get('logged_user')
+        if not user:
+            messages.error(
+                self.request,
+                'Você precisa efetuar o login.'
+            )
+            return redirect('userprofile:login')
+        
+        booking_id = self.request.GET.get('booking_id')
+        data = db.bookings.find_one({'_id': booking_id})
+        if data:
+            booking = Booking(
+                data['customer_id'], 
+                data['protocol'], 
+                data['estimated_checkout_date'], 
+                data['booking_date'], 
+                data['checkout_date'], 
+                data['estimated_return_date'], 
+                data['return_date'], 
+                data['status'], 
+                data['_id']
+            )
+            booking = booking.checkout()
+
+        return redirect('booking:list')
+
+class Return(View):
+    pass
 class List(DispatchLoginRequiredMixin, View):
     context_object_name = 'bookings'
     template_name = 'booking/list.html'

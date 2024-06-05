@@ -8,8 +8,8 @@
             <div class="col-lg-2 font-weight-bold">Número do protocolo:</div>
             <div class="col-lg-4">{{ booking.protocol }}</div>
 
-            <div class="col-lg-2 font-weight-bold">QTD. Livros:</div>
-            <div class="col-lg-4">{{ booking.total }}</div>
+            {% comment %} <div class="col-lg-2 font-weight-bold">QTD. Livros:</div>
+            <div class="col-lg-4">{{ books.keys }}</div> {% endcomment %}
             <div class="col-lg-2 font-weight-bold">Status:</div>
             <div class="col-lg-4">{{ booking.status }}</div>
         </div>
@@ -45,6 +45,7 @@
                     <td>
                         {% if booking.status == 'reservado' %}
                             <form action="{% url 'booking:checkout' %}" method="get">
+                                <input type="hidden" name="booking_id" id="booking_id" value="{{ booking.id }}">
                                 <button class="btn btn-primary" type="submit">Confirmar retirada</button>
                             </form>
                         {% elif booking.status == 'retirado' %}

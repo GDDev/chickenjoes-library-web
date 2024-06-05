@@ -10,6 +10,10 @@ class Booking:
     
     def create_estimated_checkout_date(self):
         return self.booking_date + timedelta(days=7)
+    
+    def create_estimated_return_date(self):
+        if self.checkout_date:
+            return self.checkout_date + timedelta(days=30)
 
     def __init__(self, customer_id, protocol=None, estimated_checkout_date=None, booking_date=datetime.now(), checkout_date=None, estimated_return_date=None, return_date=None, status='reservado', _id=None):
         self.customer_id = customer_id
@@ -22,6 +26,13 @@ class Booking:
         self.estimated_return_date = estimated_return_date
         self.return_date = return_date
         self.id = _id or ObjectId()
+
+    def checkout(self):
+        self.status = 'retirado'
+        self.checkout_date = datetime.now()
+        self.estimated_return_date = self.create_estimated_return_date()
+        self.save()
+        return self
 
     def save(self):
         booking_data = {
