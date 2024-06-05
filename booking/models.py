@@ -33,6 +33,12 @@ class Booking:
         self.estimated_return_date = self.create_estimated_return_date()
         self.save()
         return self
+    
+    def returning(self):
+        self.status = 'devolvido'
+        self.return_date = datetime.now()
+        self.save()
+        return self
 
     def save(self):
         booking_data = {

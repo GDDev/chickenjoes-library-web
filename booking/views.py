@@ -109,7 +109,7 @@ class CheckOut(View):
             return redirect('userprofile:login')
         
         booking_id = self.request.GET.get('booking_id')
-        data = db.bookings.find_one({'_id': booking_id})
+        data = db.bookings.find_one({'_id': ObjectId(booking_id)})
         if data:
             booking = Booking(
                 data['customer_id'], 
@@ -127,7 +127,54 @@ class CheckOut(View):
         return redirect('booking:list')
 
 class Return(View):
-    pass
+    def get(self, *args, **kwargs):
+        user = self.request.session.get('logged_user')
+        if not user:
+            messages.error(
+                self.request,
+                'Você precisa efetuar o login.'
+            )
+            return redirect('userprofile:login')
+        
+        booking_id = self.request.GET.get('booking_id')
+        data = db.bookings.find_one({'_id': ObjectId(booking_id)})
+        books_ids = db.book_in_booking.find({'booking_id': ObjectId(booking_id)})
+        books = [db.books.find_one({'_id': ObjectId(book['book_id'])}) for book in books_ids]
+        for book in books:
+            if book:
+                Book(
+                    book['title'], 
+                    book['language'], 
+                    book['publication_date'], 
+                    book['pages'], 
+                    book['size'], 
+                    book['publisher'], 
+                    book['isbn'], 
+                    book['inside_code'], 
+                    True, 
+                    book['edition_date'], 
+                    book['description'], 
+                    book['edition_number'], 
+                    image=book['image'], 
+                    slug=book['slug'], 
+                    _id=book['_id']
+                ).save()
+        if data:
+            booking = Booking(
+                data['customer_id'], 
+                data['protocol'], 
+                data['estimated_checkout_date'], 
+                data['booking_date'], 
+                data['checkout_date'], 
+                data['estimated_return_date'], 
+                data['return_date'], 
+                data['status'], 
+                data['_id']
+            )
+            booking = booking.returning()
+
+        return redirect('booking:list')
+    
 class List(DispatchLoginRequiredMixin, View):
     context_object_name = 'bookings'
     template_name = 'booking/list.html'

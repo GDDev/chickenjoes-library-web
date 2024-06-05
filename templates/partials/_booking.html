@@ -45,11 +45,12 @@
                     <td>
                         {% if booking.status == 'reservado' %}
                             <form action="{% url 'booking:checkout' %}" method="get">
-                                <input type="hidden" name="booking_id" id="booking_id" value="{{ booking.id }}">
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
                                 <button class="btn btn-primary" type="submit">Confirmar retirada</button>
                             </form>
                         {% elif booking.status == 'retirado' %}
                             <form action="{% url 'booking:return' %}" method="get">
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
                                 <button class="btn btn-primary" type="submit">Confirmar devolução</button>
                             </form>
                         {% endif %}
