@@ -1,3 +1,4 @@
+import pprint
 from bson import ObjectId
 from django.shortcuts import render, redirect
 from django.views import View
@@ -83,6 +84,7 @@ class Detail(DispatchLoginRequiredMixin, View):
         if not data:
             return redirect('booking:list')
         else:
+            books_ids = db.book_in_booking.find({'booking_id': data['_id']})
             booking = Booking(
                 data['customer_id'], 
                 data['protocol'], 
@@ -94,7 +96,10 @@ class Detail(DispatchLoginRequiredMixin, View):
                 data['status'], 
                 data['_id']
             )
-            return render(request, 'booking/detail.html', {'booking': booking})
+            books = [db.books.find_one({'_id': ObjectId(book['book_id'])}) for book in books_ids]
+            print(books)
+
+            return render(request, 'booking/detail.html', {'booking': booking, 'books': books})
 
 class List(DispatchLoginRequiredMixin, View):
     context_object_name = 'bookings'
