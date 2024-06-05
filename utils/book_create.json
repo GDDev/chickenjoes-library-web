@@ -1,0 +1,19 @@
+{
+    "_id": {
+      "$oid": "665f834b17e8a064a0d7fe08"
+    },
+    "inside_code": "CódigoInterno",
+    "availability": true,
+    "title": "Título",
+    "description": "Descrição do Livro",
+    "language": "Português",
+    "publication_date": "2022-10-31T09:00:00.594Z",
+    "edition_date": "2022-10-31T09:00:00.594Z",
+    "pages": 200,
+    "size": "12x10x11",
+    "publisher": "Editora",
+    "edition_number": "1",
+    "isbn": "1111111111",
+    "image": null,
+    "slug": "titulo"
+}

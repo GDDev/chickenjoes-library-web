@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+{{ book.title }}
+{% endblock title %}
+
+{% block content %}
+
+    {% if book.image %}
+        <img src="{{ book.image.url }}">
+    {% else %}
+        <img src="{% static 'assets/img/default.jpg'%}" alt="{{ book.title }}">
+    {% endif %}
+
+    <h1>{{ book.title }}</h1>
+    <p>{{ book.description }}</p>
+
+    {% comment %} {% url 'book:addtocart' %} {% endcomment %}
+    <form action="#" method="get">
+        <input type="hidden" name="id" value="{{ book.id }}">
+        {{ book.title }}
+        <input type="submit" value="Reservar">
+    </form>
+
+{% endblock content %}

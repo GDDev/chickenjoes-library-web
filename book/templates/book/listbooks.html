@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Livros
+{% endblock title %}
+
+{% block content %}
+    <aside class="left-content-container">
+        <div class="filter-list-container">
+            <form action="{% url 'book:listbooks' %}" method="get" class="filter-container">
+                <h2 class="filter-title">Autor</h2>
+                {% for author in authors %}
+                    <input type="checkbox" name="filter_by_author" id="{{ author.name.lower }}" value="{{ author.id }}">
+                    <label for="filter_by_author">{{ author.name }}</label></br>
+                {% endfor %}
+
+                <button type="submit" class="filter-button">Filtrar</button>
+            </form>
+        </div>
+    </aside>
+
+    <section class="center-content-container">
+        {% include "partials/_searchbox.html" %}
+
+        <div class="leftover-center-content-container">
+            <div class="book-list-container">
+                {% if books %}
+                    {% for book in books %}
+                        <div class="book-container">
+                            <a href="{% url 'book:detail' book.slug %}"> 
+                                {% if book.image %}
+                                    <img src="{{  book.image.url }}" alt="{{ book.title }}" class="book-image">
+                                {% else %}
+                                    <img src="{% static 'assets/img/default.jpg'%}" alt="{{ book.title }}" class="book-image">
+                                {% endif %}
+                                <h3 class="book-title" title="{{ book.title }}">{{ book.title }}</h3>
+                                {% if book.edition_number != 'N/A' %}
+                                    <p class="book-description" title="{{ book.edition_number }}">Número da edição: {{ book.edition_number }}</p>
+                                {% else %}
+                                    <p class="book-description" title="{{ book.description }}">{{ book.description }}</p>
+                                {% endif %}
+                                <button type="submit" class="book-button">Reservar</button>
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                        <h1>Não há livros disponíveis</h1>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

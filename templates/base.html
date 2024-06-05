@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {% include "partials/_head.html" %}
+    <title>{% block title %}{% endblock title %} - Chicken Joe's Library</title>
+</head>
+<body>
+    {% include "partials/_header.html" %}
+
+    <main class="middle-container">
+        {% include "partials/_messages.html" %}
+        {% block content %}{% endblock content %}
+
+        <aside class="right-content-container">
+            {% include "partials/_nav.html" %}
+        </aside>
+    </main>
+
+    {% include "partials/_footer.html" %}
+</body>
+</html>

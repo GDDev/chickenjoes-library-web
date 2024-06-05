@@ -1,0 +1,9 @@
+{
+    "_id": {
+      "$oid": "665f834b17e8a064a0d7fe08"
+    },
+    "name": "Author",
+    "nacionality": "Brasileiro", 
+    "education": "PHD", 
+    "description": "Author qualquer"
+}

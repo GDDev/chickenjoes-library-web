@@ -1,0 +1,25 @@
+{% load static %}
+
+<table>
+    <tr>
+        <th>Imagem</th>
+        <th>Livro</th>
+    </tr>
+
+    {% for book in cart.values %}
+    <tr>
+        <td>
+            <img src="{% get_media_prefix %}{{ book.book_image }}">
+        </td>
+        <td>
+            <a href="{{ book.book_slug }}">
+            {{ book.book_title }}
+            </a>
+            <a href="{% url 'book:removefromcart' %}?id={{ book.book_id }}">
+                <i>X</i>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>

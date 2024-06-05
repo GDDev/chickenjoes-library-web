@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% load filters %}
+
+{% block title %}
+Reservar livros
+{% endblock %}
+
+{% block content %}
+
+    {% if cart %}
+        <h3>Livros para reservar</h3>
+        <p>Livros adicionados à reservar.</p>
+        
+        {% include "partials/_cart.html" %}
+
+        {% if request.user.is_authenticated %}
+            <a href="{% url "book:overall" %}">
+                Reservar livros
+            </a>
+        {% else %}
+            <a href="{% url "user_profile:create" %}">
+                Entrar para continuar
+            </a>
+        {% endif %}
+
+    {% else %}
+        <h3>Livros para reservar</h3>
+        <p>Não há livros para reservar.</p>
+
+    {% endif %}
+
+{% endblock content %}

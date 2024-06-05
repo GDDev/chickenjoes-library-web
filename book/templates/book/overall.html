@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}
+Resumo da reserva
+{% endblock title %}
+
+{% block content %}
+    <h2>Resumo da reserva</h2>
+
+    <p>Dados do usuário</p>
+    <p>Caso precise editar, <a href="{% url 'user_profile:create' %}">clique aqui</a></p>
+    <dl>
+        <dt>Nome:</dt>
+        <dd>{{ user.first_name }}</dd>
+        <dt>Sobrenome:</dt>
+        <dd>{{ user.last_name }}</dd>
+
+        <dt>Nascimento:</dt>
+        <dd>{{ user.user_profile.birth_date }}</dd>
+
+        <dt>CPF:</dt>
+        <dd>{{ user.user_profile.cpf }}</dd>
+        <dt>E-mail:</dt>
+        <dd>{{ user.email }}</dd>
+    </dl>
+
+    <h3>Livros à reservar</h3>
+
+    {% include "partials/_cart.html" %}
+
+    <a href="{% url 'booking:savebooking' %}">
+        Realizar reserva
+    </a>
+{% endblock content %}
