@@ -1,12 +1,9 @@
-from django.db import models
 from utils.dbconnect import connect
 from bson.objectid import ObjectId
 import os
 from PIL import Image
-from django.conf import settings
 from django.utils.text import slugify
 
-# book_collection = db['Book']
 db = connect()
 
 class Author:

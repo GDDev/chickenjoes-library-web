@@ -7,8 +7,4 @@ class FinishBooking(View):
         return HttpResponse('BOOKING')
 
 class Detail(View):
-<<<<<<< HEAD
     ...
-=======
-    ...
->>>>>>> b68ad8231849ff80a4984ebe22fc11694594f8ec
