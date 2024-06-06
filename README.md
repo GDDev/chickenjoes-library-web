@@ -1,13 +1,33 @@
 <h1>Here is a little guide on how to run this app</h1>
 
-To begin, it's advised that you create a virtual environment:
+<h4>
+<span><bold>!IMPORTANT!</span></bold>
+You must have Python and PIP installed for this project.
+</h4>
+
+To begin, clone this repository:
+```
+git clone git@github.com:GDDev/chickenjoes-library-web.git
+```
+
+After cloning, access the project's folder:
+```
+cd .\chickenjoes-library-web\
+```
+
+Now it's advised that you create a virtual environment:
 ```
 python -m venv .venv
 ```
 
+And activate it (if on Windows):
+```
+.\.venv\Scripts\activate
+```
+
 Then, you can install the requirements for this project:
 ```
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 Once that's out of the way, you should be able to launch the localhost server:
