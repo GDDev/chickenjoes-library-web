@@ -7,10 +7,10 @@ Login/Cadastrar
 
 {% block content %}
 
-<div class="row">
+<div class="user-profile">
 
     {% if not request.session.logged_user %}
-    <div class="col-lg mt-3">
+    <div class="form-login">
         <h4>Login</h4>
         <p>Já possui uma conta? Entre aqui:</p>
 
@@ -24,12 +24,12 @@ Login/Cadastrar
               <label for="exampleInputPassword1">Senha</label>
               <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Digite sua senha">
             </div>
-            <button type="submit" class="btn btn-primary btn-block btn-lg">Entrar</button>
+            <button type="submit" class="btn-form">Entrar</button>
         </form>
     </div>
     {% endif %}
 
-    <div class="col-lg mt-3">
+    <div class="form-register">
         {% block signinheader %}
         <h4>Cadastro</h4>
         <p>Não possui conta? Crie uma aqui:</p>
@@ -62,9 +62,9 @@ Login/Cadastrar
                 <input type="email" name="email" class="form-control" id="email" placeholder="Insira seu endereço de e-mail">
             </div>
 
-            <div class="row">
-                <div class="col">
-                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+            <div class="">
+                <div class="">
+                    <button type="submit" class="btn-form">
                         Enviar
                     </button>
                 </div>

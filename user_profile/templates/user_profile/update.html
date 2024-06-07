@@ -7,10 +7,10 @@ Atualizar perfil
 {% block content %}
 
 {% if request.session.logged_user %}
-    <div class="row">    
-        <div class="col-lg mt-3">
+    <div class="user-update">    
+        <div class="form-update">
             {% block signinheader %}
-                <h1>Atualizar Dados</h1>
+                <h4>Atualizar Dados</h4>
                 <p>Informe seus dados atualizados abaixo:</p>
             {% endblock signinheader %}
 
@@ -43,7 +43,7 @@ Atualizar perfil
 
                 <div class="row">
                     <div class="col">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        <button type="submit" class="btn-form">
                             Enviar
                         </button>
                     </div>
