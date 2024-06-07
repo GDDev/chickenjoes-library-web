@@ -14,6 +14,9 @@
     --secundary-color: #00EAAA;
     --dark-text: rgb(0, 75, 45);
     --light-text: rgb(15, 135, 85);
+    --top-header: #39415e87;
+    --bg-form-login: #1641dec9;
+    --bg-form-register: #894c3bbb;
 }
 
 * a{
@@ -26,8 +29,8 @@ html{
 
 body{
     font-size: 100%;
-    max-height: 100vh;
     max-width: 100vw;
+    max-height: 100vh;
     background-color: var(--main-color);
     font-family: var(--standard-font);
 }
@@ -44,6 +47,7 @@ button, input{
     left: 0;
     right: 0;
     height: 8vh;
+    background-color: var(--top-header);
 }
 
 .my_header{
@@ -460,15 +464,139 @@ button, input{
     padding: .1rem .4rem;
     cursor: pointer;
 }
+
+/* FORM - USER-PROFILE - GG */
+.user-profile {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    padding: 5rem;
+    color: white;
+}
+
+.user-profile h4, .form-update h4 {  
+    text-align: center;
+    font-weight: 700;
+    text-transform: capitalize;
+    font-size: 1.7rem;
+}
+
+.user-profile p, .form-update p{
+    font-size: 1.2rem;
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.user-profile .form-login {
+    width: 30%;
+    height: max-content;
+    background-color: var(--bg-form-login);
+    padding: 5rem;
+    border-radius: 10px;
+}
+
+.user-profile .form-register {
+    width: 30%;
+    height: max-content;
+    background-color: var(--bg-form-register);
+    padding: 5rem;
+    border-radius: 10px;
+}
+
+.user-profile .form-group label, .form-update label {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.user-profile .form-group input, .user-update .form-update input {
+    display: block;
+    padding: 0.7rem;
+    border: 1px solid transparent;
+    font-size: 1.3rem;
+    width: 100%;
+    height: 30px;
+    border-radius: 3px;
+    transition: all .4s ease-in-out;
+    margin-top: 0.4rem;
+    margin-bottom: 1.3rem;
+    transition: all .4s ease-in-out;
+}
+
+.user-profile .form-group input:focus, .user-update .form-update input:focus {
+    border: 1px solid var(--secundary-color);
+    outline: none;
+    border-radius: 10px;
+}
+
+.user-profile .form-group input:focus  {
+    border-radius: 10px;
+}
  
+.user-profile .btn-form, .form-update .btn-form {
+    cursor: pointer;
+    border: 1px solid transparent;
+    width: 100%;
+    border-radius: 6px;
+    padding: 8px;
+    background-color: var(--secundary-color);
+    transition: all .4s ease-in-out;
+    font-size: 1.3rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.user-profile .btn-form:hover, .form-update .btn-form:hover {
+    border: 1px solid black;
+    background-color: #00CD97;
+}
+
+/* MEDIA SCREEN FORM - USER-PROFILE _ GG */
+@media screen and (max-width: 992px) {
+    .user-profile {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-profile .form-register {
+        width: 70%;
+    }
+
+    .user-profile .form-login {
+        width: 70%;
+    }
+}
+
+/* USER UPDATE - GG */
+.user-update {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 5rem;
+    color: white;
+}
+
+.user-update .form-update {
+    width: 30%;
+    height: max-content;
+    background-color: var(--bg-form-login);
+    padding: 5rem;
+    border-radius: 10px;
+}
+
 /* FROM BOOTSTRAP */
 
 .alert {
     position: relative;
+    top: 0;
+    right: 0;
+    margin-top: 0.75rem;
     padding: 0.75rem 1.25rem;
     margin-bottom: 1rem;
     border: 1px solid transparent;
-    border-radius: 0.25rem; }
+    border-radius: 0.25rem; 
+    background-color: red;
+}
   
 .alert-heading {
     color: inherit; }
