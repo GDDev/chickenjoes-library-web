@@ -5,31 +5,34 @@ Empréstimos de {{ request.session.logged_user.username }}
 {% endblock title %}
 
 {% block content %}
-<div class="row">
-    <div class="col">
-        <h3 class="mb-4">Empréstimos de {{ request.session.logged_user.first_name }}</h3>
+<div class="table-content">
+    <div class="">
+        <h3 class="">Empréstimos de {{ request.session.logged_user.first_name }}</h3>
 
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <tr>
-                    <th scope="col">Empréstimo</th>
-                    <th scope="col">Qtd. Livros</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Mais detalhes</th>
-                </tr>
-
-                {% for booking in bookings %}
-                <tr>
-                    <th scope="row">{{ booking }}</td>
-                    <td>{{ booking.total}}</td>
-                    <td>{{ booking.status }}</td>
-                    <td>
-                        <a href="{% url 'booking:detail' booking.id %}">
-                            Ver <i class="fas fa-search-plus ml-2"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
+        <div class="">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="w-30">Empréstimo</th>
+                        <th scope="col">Qtd. Livros</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="w-30">Mais detalhes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <th scope="">{{ booking }}</td>
+                        <td>{{ booking.total}}</td>
+                        <td>{{ booking.status }}</td>
+                        <td>
+                            <a href="{% url 'booking:detail' booking.id %}">
+                                Ver <i class="fas fa-search-plus ml-2"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>

@@ -14,7 +14,7 @@
     --secundary-color: #00EAAA;
     --dark-text: rgb(0, 75, 45);
     --light-text: rgb(15, 135, 85);
-    --top-header: #FFF;
+    --top-header: #8a8a8a;
     --bg-form-login: #1641dec9;
     --bg-form-register: #894c3bbb;
 }
@@ -465,7 +465,7 @@ button, input{
     cursor: pointer;
 }
 
-/* FORM - USER-PROFILE - GG */
+/* FORM - USER-PROFILE */
 .user-profile {
     display: flex;
     width: 100%;
@@ -474,14 +474,14 @@ button, input{
     color: white;
 }
 
-.user-profile h4, .form-update h4 {  
+.user-profile h4, .form-update h4, .table-content h3, .cart-content h3 {  
     text-align: center;
     font-weight: 700;
     text-transform: capitalize;
     font-size: 1.7rem;
 }
 
-.user-profile p, .form-update p{
+.user-profile p, .form-update p, .cart-content p{
     font-size: 1.2rem;
     text-align: center;
     padding-bottom: 1rem;
@@ -550,7 +550,7 @@ button, input{
     background-color: #00CD97;
 }
 
-/* MEDIA SCREEN FORM - USER-PROFILE _ GG */
+/* MEDIA SCREEN FORM - USER-PROFILE */
 @media screen and (max-width: 992px) {
     .user-profile {
         flex-direction: column;
@@ -567,7 +567,7 @@ button, input{
     }
 }
 
-/* USER UPDATE - GG */
+/* USER UPDATE */
 .user-update {
     width: 100%;
     display: flex;
@@ -577,25 +577,128 @@ button, input{
 }
 
 .user-update .form-update {
-    width: 30%;
+    width: 40%;
     height: max-content;
     background-color: var(--bg-form-login);
     padding: 5rem;
     border-radius: 10px;
 }
 
-/* FROM BOOTSTRAP */
+@media screen and (max-width: 992px) {
+    .user-update .form-update {
+        width: 80%;
+    }
+}
+
+/* FORM EMPRESTIMOS */
+.table-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    padding: 5rem;
+    color: white;
+}
+
+.table-content > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    height: max-content;
+    background-color: var(--bg-form-login);
+    padding: 5rem 0rem;
+    border-radius: 10px;
+}
+
+.table-content > div > div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table {
+    margin: 1.4rem;
+    width: 90%;
+}
+
+.table, th, td {
+    border: 1px solid black;    
+    border-collapse: collapse;
+}
+
+.table > thead {
+    background-color: #D6EEEE;
+    color: black;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.table .w-30 {
+    width: 35%;
+}
+
+th, td {
+    padding: 1rem;
+}
+
+.table tbody {
+    text-align: left;
+}
+
+tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.334);
+}
+
+/* CART */
+
+.cart {
+    padding: 5rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+}
+
+.cart-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    height: max-content;
+    background-color: var(--bg-form-login);
+    padding: 5rem 0rem;
+    border-radius: 10px;
+    color: white;
+}
+
+/* ALERT MESSAGES */
 
 .alert {
-    position: relative;
-    top: 0;
-    right: 0;
+    position: absolute;
+    top: 5.5rem;
+    left: 50%;
+    transform: translateX(-50%);
     margin-top: 0.75rem;
     padding: 0.75rem 1.25rem;
     margin-bottom: 1rem;
     border: 1px solid transparent;
     border-radius: 0.25rem; 
-    background-color: red;
+    height: 30px;
+    animation-name: alertAnimation;
+    animation-duration: .7s;
+    font-weight: 600;
+}
+
+@keyframes alertAnimation {
+    0% {
+        opacity: 0;
+        top: 10rem;
+    }
+    100% {
+        opacity: 1;
+        top: 5.5rem;
+    }
 }
   
 .alert-heading {

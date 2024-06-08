@@ -9,27 +9,31 @@ Reservar livros
 
 
 {% block content %}
-
-    {% if cart %}
-        <h3>Livros para reservar</h3>
-        <p>Livros adicionados à reservar.</p>
+    <div class="cart">
+        <div class="cart-content">
+            {% if cart %}
+                <h3>Livros para reservar</h3>
+                <p>Livros adicionados à reservar.</p>
+                
+                {% include "partials/_cart.html" %}
         
-        {% include "partials/_cart.html" %}
+                {% if request.session.logged_user %}
+                    <a href="{% url "booking:savebooking" %}">
+                        Reservar livros
+                    </a>
+                {% else %}
+                    <a href="{% url "userprofile:createuser" %}">
+                        Entre para continuar
+                    </a>
+                {% endif %}
+        
+            {% else %}
+                <h3>Livros para reservar</h3>
+                <p>Não há livros para reservar.</p>
+        
+            {% endif %}
+        </div>
+    </div>
 
-        {% if request.session.logged_user %}
-            <a href="{% url "booking:savebooking" %}">
-                Reservar livros
-            </a>
-        {% else %}
-            <a href="{% url "userprofile:createuser" %}">
-                Entre para continuar
-            </a>
-        {% endif %}
-
-    {% else %}
-        <h3>Livros para reservar</h3>
-        <p>Não há livros para reservar.</p>
-
-    {% endif %}
 
 {% endblock content %}
