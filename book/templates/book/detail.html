@@ -47,13 +47,14 @@
         </tbody>
     </table>
 
+    <a href="{% url 'book:listbooks' %}">
+        <input type="button" value="Voltar">
+    </a>
     {% if not book_is_suggestion %}
         <form action="{% url 'book:addtocart' %}" method="get">
             <input type="hidden" name="id" value="{{ book.id }}">
             <input type="submit" value="Reservar">
         </form>
     {% endif %}
-
-    <a href="{% url 'book:listbooks' %}"><input type="button" value="Voltar"></a>
 
 {% endblock content %}
