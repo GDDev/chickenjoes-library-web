@@ -48,7 +48,6 @@ class UserProfile:
     # TODO: encrypt password
     @staticmethod
     def authenticate_user(username, password):
-        # print(db.users.find_one({'username': username} and {'password': password}))
         return db.users.find_one({'username': username} and {'password': password})
 
     @staticmethod

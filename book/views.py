@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.contrib import messages
+
+from booking.models import Booking
 from .models import Book, Author, BookAuthorAssociation, SuggestedBook, SuggestedBookAuthorAssociation
 from bson.objectid import ObjectId
 
@@ -117,19 +119,18 @@ class DetailBook(View):
 
 class AddToCart(View):
     def get(self, *args, **kwargs):
-        http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
+        # http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
         id = self.request.GET.get('id')
         if not id:
             messages.error(
                 self.request,
                 f'Livro não encontrado.{self.request.GET}'
             )
-            return redirect(http_referer)
+            return redirect('book:listbooks')
         id_obj = ObjectId(id)
         book_data = db.books.find_one({'_id': id_obj})
-
         if not book_data:
-            return redirect(http_referer)
+            return redirect('book:listbooks')
         
         book = Book(
                 inside_code=book_data['inside_code'],
@@ -154,15 +155,27 @@ class AddToCart(View):
             self.request.session.save()
 
         if id in self.request.session['cart']:
-            return redirect(http_referer)
-
+            messages.warning(
+                self.request,
+                'Livro já no carrinho.'
+            )
+            return redirect('book:listbooks')
+        
         cart = self.request.session['cart']
+        if self.request.session.get('logged_user'):
+            if Booking.get_total_user_books(self.request.session['logged_user']['_id']) + len(cart) >= 5:
+                messages.error(
+                self.request,
+                'Limite máximo de livros atingido.'
+                )
+                return redirect('book:cart')      
+        elif len(cart) >= 5:
+            messages.error(
+                self.request,
+                'Limite máximo de livros atingido.'
+            )
+            return redirect('book:cart')
 
-        # TODO: Limit user to 5 books
-        # if id in cart:
-        #     cart_qtt = cart[id]['quantity']
-        #     cart_qtt += 1
-        # else:
         cart[id] = {
             'book_id': id,
             'book_inside_code': book.inside_code,
@@ -180,9 +193,8 @@ class AddToCart(View):
             'book_image': book.image,
             'book_slug': book.slug,
         }
-
         self.request.session.save()
-        return redirect(http_referer)
+        return redirect('book:listbooks')
 
 class RemoveFromCart(View):
     def get(self, *args, **kwargs):
@@ -254,10 +266,10 @@ class SuggestAuthor(View):
 class AssocAuthor(View):
     def get(self, *args, **kwargs):
         if not self.request.session.get('suggestion'):
-            messages.error = {
+            messages.error(
                 self.request, 
-                'Não é possível associar autores à um livro sem um livro.',
-            }
+                'Não é possível associar autores à um livro sem um livro.'
+            )
             return redirect('book:suggestbook')
         
         authors = db.authors.find()
@@ -282,10 +294,10 @@ class AssocAuthor(View):
 class SendSuggestion(View):
     def get(self, *args, **kwargs):
         if not self.request.session.get('suggestion'):
-            messages.error = {
+            messages.error(
                 self.request, 
-                'Não é possível associar autores à um livro sem um livro.',
-            }
+                'Não é possível associar autores à um livro sem um livro.'
+            )
             return redirect('book:suggestbook')
 
         if self.request.session.get('assocauthors'):
@@ -310,10 +322,10 @@ class SendSuggestion(View):
                     suggest = SuggestedBookAuthorAssociation(book_id=ObjectId(book.id), author_id=ObjectId(author))
                     suggest.save()
 
-                messages.success = {
+                messages.success(
                     self.request,
-                    'Livro recomendado com sucesso.',
-                }
+                    'Livro recomendado com sucesso.'
+                )
 
                 del self.request.session['suggestion']
                 del self.request.session['assocauthors']

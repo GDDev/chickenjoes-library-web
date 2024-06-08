@@ -59,12 +59,10 @@ class Booking:
 
     @staticmethod
     def get_total_user_books(user_id):
-        bookings = db.bookings.find({'status': 'reservado'} or {'status': 'retirado'} and {'customer_id': user_id})
         total = 0
+        bookings = list([booking for booking in db.bookings.find({'customer_id': user_id}) if not booking['return_date']])
         for booking in bookings:
-            books = db.book_in_booking.find({'booking_id': booking.get('_id')}) or []
-            for book in books:
-                total += 1
+            total += len(list(db.book_in_booking.find({'booking_id': booking['_id']})))
         return total
 
     def __str__(self) -> str:
