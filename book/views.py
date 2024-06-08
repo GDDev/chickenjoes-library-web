@@ -211,9 +211,22 @@ class SuggestBook(View):
         edition_number = self.request.POST.get('edition_number')
         isbn = self.request.POST.get('isbn')
 
+        book_data = {
+            'title': title,
+            'description': description,
+            'language': language,
+            'publication_date': publication_date,
+            'edition_date': edition_date,
+            'pages': pages,
+            'size': size,
+            'publisher': publisher,
+            'edition_number': edition_number,
+            'isbn': isbn,
+        }
+
         book = SuggestedBook(title=title, language=language, publication_date=publication_date, pages=pages, size=size, publisher=publisher, isbn=isbn, edition_date=edition_date, description=description, edition_number=edition_number)
 
-        self.request.session['suggestion'] = book
+        self.request.session['suggestion'] = book_data
         self.request.session.save()
 
         return redirect('book:assocauthor')
@@ -231,10 +244,38 @@ class AssocAuthor(View):
             }
             return redirect('book:suggestbook')
         
+        authors = db.authors.find()
+        authors = {
+            Author(
+                _id=author['_id'], 
+                name=author['name'], 
+                nacionality=author['nacionality'], 
+                education=author['education'], 
+                description=author['description']
+            ) for author in authors
+        }
+        suggested_authors = db.suggested_authors.find()
+
+        context = {
+            'authors': authors,
+            'suggested_authors': suggested_authors,
+        }
+
+        return render(self.request, 'book/assocauthor.html', context)
+
+class SendSuggestion(View):
+    def get(self, *args, **kwargs):
+        if not self.request.session.get('suggestion'):
+            messages.error = {
+                self.request, 
+                'Não é possível associar autores à um livro sem um livro.',
+            }
+            return redirect('book:suggestbook')
+
         if self.request.session.get('assocauthors'):
             book = self.request.session['suggestion']
             
-            book = Book(
+            book = SuggestedBook(
                 title=book['title'],
                 language=book['language'],
                 publication_date=book['publication_date'],
@@ -260,25 +301,8 @@ class AssocAuthor(View):
 
                 del self.request.session['suggestion']
                 del self.request.session['assocauthors']
-        
-        authors = db.authors.find()
-        authors = {
-            Author(
-                _id=author['_id'], 
-                name=author['name'], 
-                nacionality=author['nacionality'], 
-                education=author['education'], 
-                description=author['description']
-            ) for author in authors
-        }
-        suggested_authors = db.suggested_authors.find()
 
-        context = {
-            'authors': authors,
-            'suggested_authors': suggested_authors,
-        }
-
-        return render(self.request, 'book/assocauthor.html', context)
+                return redirect('book:listbooks')
 
 class AddAuthorToList(View):
     def get(self, *args, **kwargs):

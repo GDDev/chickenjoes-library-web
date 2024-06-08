@@ -7,6 +7,19 @@ Definir autores
 {% block content %}
     <h1>Definir autores do livro</h1>
 
+    <form action="#">
+        <input type="text" value="{{ request.session.suggestion.title }}" disabled>
+        <input type="text" value="{{ request.session.suggestion.isbn }}" disabled>
+        <input type="text" value="{{ request.session.suggestion.description }}" disabled>
+        <input type="text" value="{{ request.session.suggestion.language }}" disabled>
+        <input type="text" value="{{ request.session.suggestion.edition_number }}" disabled>
+        <input type="date" value="{{ request.session.suggestion.publication_date }}" disabled>
+        <input type="date" value="{{ request.session.suggestion.edition_date }}" disabled>
+        <input type="number" value="{{ request.session.suggestion.pages }}" disabled>
+        <input type="text" value="{{ request.session.suggestion.size }}" disabled>
+        <input type="text" value="{{ request.session.suggestion.publisher }}" disabled>
+    </form>
+        
     <table>
         <thead>
             <caption>Autores selecionados</caption>
@@ -50,7 +63,7 @@ Definir autores
     <a href="{% url 'book:suggestbook' %}">
         <input type="button" value="Voltar">
     </a>
-    <a href="{% url 'book:assocauthor' %}">
+    <a href="{% url 'book:sendsuggestion' %}">
         <input type="button" value="Sugerir livro">
     </a>
 

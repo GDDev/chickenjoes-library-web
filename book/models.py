@@ -166,7 +166,7 @@ class SuggestedBook(Book):
             'image': self.image,
             'slug': self.slug,
         }
-        db.books.replace_one({'_id': self.id}, book_data, upsert=True)
+        db.suggested_books.replace_one({'_id': self.id}, book_data, upsert=True)
     
 class BookAuthorAssociation:
     def __init__(self, book_id, author_id, _id=None):
