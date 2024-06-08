@@ -1,16 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
 from django.views import View
-from django.http import HttpResponse
 from django.contrib import messages
-from .models import Book, Author, BookAuthorAssociation
-from django.core import serializers
+from .models import Book, Author, BookAuthorAssociation, SuggestedBook, SuggestedBookAuthorAssociation
 from bson.objectid import ObjectId
-
-import pprint
-from django.db.models import Q
 
 from utils.dbconnect import connect
 db = connect()
@@ -173,8 +166,6 @@ class AddToCart(View):
         }
 
         self.request.session.save()
-        pprint.pp(self.request.session.get('cart'))
-        print()
         return redirect(http_referer)
 
 class RemoveFromCart(View):
@@ -196,3 +187,142 @@ class Cart(View):
             'cart': self.request.session.get('cart', {})
         }
         return render(self.request, 'book/cart.html', context)
+    
+class SuggestBook(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'book/suggestbook.html')
+
+    def post(self, *args, **kwargs):
+        if not self.request.session.get('logged_user'):
+            messages.error(
+                self.request,
+                'Você precisa estar logado para sugerir um livro.'
+            )
+            return redirect('userprofile:createuser')
+        
+        title = self.request.POST.get('title')
+        description = self.request.POST.get('description')
+        language = self.request.POST.get('language')
+        publication_date = self.request.POST.get('publication_date')
+        edition_date = self.request.POST.get('edition_date')
+        pages = self.request.POST.get('pages')
+        size = self.request.POST.get('size')
+        publisher = self.request.POST.get('publisher')
+        edition_number = self.request.POST.get('edition_number')
+        isbn = self.request.POST.get('isbn')
+
+        book = SuggestedBook(title=title, language=language, publication_date=publication_date, pages=pages, size=size, publisher=publisher, isbn=isbn, edition_date=edition_date, description=description, edition_number=edition_number)
+
+        self.request.session['suggestion'] = book
+        self.request.session.save()
+
+        return redirect('book:assocauthor')
+
+class SuggestAuthor(View):
+    def get(self, *args, **kwargs):
+        return redirect('book:listbooks')
+    
+class AssocAuthor(View):
+    def get(self, *args, **kwargs):
+        if not self.request.session.get('suggestion'):
+            messages.error = {
+                self.request, 
+                'Não é possível associar autores à um livro sem um livro.',
+            }
+            return redirect('book:suggestbook')
+        
+        if self.request.session.get('assocauthors'):
+            book = self.request.session['suggestion']
+            
+            book = Book(
+                title=book['title'],
+                language=book['language'],
+                publication_date=book['publication_date'],
+                pages=book['pages'],
+                size=book['size'],
+                publisher=book['publisher'],
+                isbn=book['isbn'],
+                edition_date=book['edition_date'],
+                description=book['description'],
+                edition_number=book['edition_number']
+            )
+            book.save()
+
+            if book:
+                for author in self.request.session['assocauthors']:
+                    suggest = SuggestedBookAuthorAssociation(book_id=ObjectId(book.id), author_id=ObjectId(author))
+                    suggest.save()
+
+                messages.success = {
+                    self.request,
+                    'Livro recomendado com sucesso.',
+                }
+
+                del self.request.session['suggestion']
+                del self.request.session['assocauthors']
+        
+        authors = db.authors.find()
+        authors = {
+            Author(
+                _id=author['_id'], 
+                name=author['name'], 
+                nacionality=author['nacionality'], 
+                education=author['education'], 
+                description=author['description']
+            ) for author in authors
+        }
+        suggested_authors = db.suggested_authors.find()
+
+        context = {
+            'authors': authors,
+            'suggested_authors': suggested_authors,
+        }
+
+        return render(self.request, 'book/assocauthor.html', context)
+
+class AddAuthorToList(View):
+    def get(self, *args, **kwargs):
+        id = self.request.GET.get('select_authors')
+        if not id:
+            messages.error(
+                self.request,
+                f'Autor não encontrado.{self.request.GET}'
+            )
+            return redirect('book:assocauthor')
+
+        id_obj = ObjectId(id)
+        data_author = db.authors.find_one({'_id': id_obj}) or db.suggested_authors.find_one({'_id': id_obj})
+        if not data_author:
+            return redirect('book:assocauthor')
+
+        if not self.request.session.get('assocauthors'):
+            self.request.session['assocauthors'] = {}
+            self.request.session.save()
+
+        if id in self.request.session['assocauthors']:
+            return redirect('book:assocauthor')
+        authors = self.request.session['assocauthors']
+
+        authors[id] = {
+            'id': str(data_author['_id']),
+            'name': data_author['name'],
+            'nacionality': data_author['nacionality'],
+            'education': data_author['education'],
+            'description': data_author['description'],
+        }
+
+        self.request.session.save()
+        return redirect('book:assocauthor')
+    
+class RemoveAuthorFromList(View):
+    def get(self, *args, **kwargs):
+        id = self.request.GET.get('id')
+        if not id or not self.request.session.get('assocauthors'):
+            return redirect('book:assocauthor')
+        if id not in self.request.session['assocauthors']:
+            return redirect('book:assocauthor')
+        
+        del self.request.session['assocauthors'][id]
+        self.request.session.save()
+        return redirect('book:assocauthor')   
+    

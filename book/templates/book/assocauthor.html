@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+Definir autores
+{% endblock title %}
+
+{% block content %}
+    <h1>Definir autores do livro</h1>
+
+    <table>
+        <thead>
+            <caption>Autores selecionados</caption>
+            <tr>
+                <th>Nome</th>
+                <th>Nacionalidade</th>
+                <th>Formação</th>
+                <th>Descrição</th>
+                <th></th>
+            </tr>
+        </thead>
+        {% for author in request.session.assocauthors.values %}
+            <tbody>
+                <tr>
+                    <th>{{ author.name }}</th>
+                    <th>{{ author.nacionality }}</th>
+                    <th>{{ author.education }}</th>
+                    <th>{{ author.description }}</th>
+                    <th>
+                        <a href="{% url 'book:removeauthorfromlist' %}?id={{ author.id }}">
+                            <i>X</i>
+                        </a>
+                    </th>
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+
+    <form action="{% url 'book:addauthortolist' %}" method="get">
+        <select name="select_authors" id="select_authors">
+            {% for author in authors %}
+                <option name="author_option" value="{{ author.id }}">{{ author.name }}</option>
+            {% endfor %}
+            {% for author in suggested_authors %}
+                <option name="authoroption" value="{{ author }}">{{ author.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Selecionar autor</button>
+    </form>
+
+    <a href="{% url 'book:suggestbook' %}">
+        <input type="button" value="Voltar">
+    </a>
+    <a href="{% url 'book:assocauthor' %}">
+        <input type="button" value="Sugerir livro">
+    </a>
+
+{% endblock content %}

@@ -1,3 +1,4 @@
+from datetime import datetime
 from utils.dbconnect import connect
 from bson.objectid import ObjectId
 import os
@@ -28,24 +29,39 @@ class Author:
     def __str__(self) -> str:
         return self.name
 
-class Book:
-    def create_inside_code(self):
-        return f'LIV{self.publication_date.year}{self.isbn}'
+class suggestedAuthor(Author):
+    def __init__(self, name, nacionality, education, description, _id=None):
+        super().__init__(name, nacionality, education, description, _id)
 
-    def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description='Just another book.', edition_number='N/A', authors=[], image=None, slug=None, _id=None):
-        self.inside_code = inside_code or self.create_inside_code()
+    def save(self):
+        author_data = {
+            '_id': self.id,
+            'name': self.name,
+            'nacionality': self.nacionality,
+            'education': self.education,
+            'description': self.description,
+        }
+    
+        db.suggested_authors.replace_one({'_id':self.id}, author_data, upsert=True)
+
+class Book:
+    @staticmethod
+    def create_inside_code(publication_date, isbn):
+        return f'LIV{datetime.now().year}{isbn}'
+
+    def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description=None, edition_number=None, image=None, slug=None, _id=None):
+        self.inside_code = inside_code or self.create_inside_code(publication_date, isbn)
         self.availability = availability
         self.title = title
-        self.description = description
+        self.description = description or 'Just another book.'
         self.language = language
         self.publication_date = publication_date
         self.edition_date = edition_date or publication_date
         self.pages = pages
         self.size = size
         self.publisher = publisher
-        self.edition_number = edition_number
+        self.edition_number = edition_number or 'N/A'
         self.isbn = isbn
-        self.authors = authors or []
         self.image = image
         self.slug = slug or slugify(isbn)
         self.id = _id or ObjectId()
@@ -71,7 +87,7 @@ class Book:
             self.id = ObjectId(self.id)
 
         book_data = {
-            '_id': self.id or ObjectId(),
+            '_id': self.id,
             'inside_code': self.inside_code,
             'availability': self.availability,
             'title': self.title,
@@ -124,6 +140,34 @@ class Book:
     def __str__(self) -> str:
         return self.title
     
+class SuggestedBook(Book):
+    def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description=None, edition_number=None, image=None, slug=None, _id=None):
+        super().__init__(title, language, publication_date, pages, size, publisher, isbn, inside_code, availability, edition_date, description, edition_number, image, slug, _id)
+
+    def save(self):
+        if self.image:
+            img_path = os.path.join('media', self.image)
+            self.resize_image(img_path, 150)
+
+        book_data = {
+            '_id': self.id,
+            'inside_code': self.inside_code,
+            'availability': self.availability,
+            'title': self.title,
+            'description': self.description,
+            'language': self.language,
+            'publication_date': self.publication_date,
+            'edition_date': self.edition_date,
+            'pages': self.pages,
+            'size': self.size,
+            'publisher': self.publisher,
+            'edition_number': self.edition_number,
+            'isbn': self.isbn,  
+            'image': self.image,
+            'slug': self.slug,
+        }
+        db.books.replace_one({'_id': self.id}, book_data, upsert=True)
+    
 class BookAuthorAssociation:
     def __init__(self, book_id, author_id, _id=None):
         self.book_id = book_id
@@ -145,3 +189,15 @@ class BookAuthorAssociation:
     @staticmethod
     def find_authors_by_book(book_id):
         return db.book_author_associations.find({'book_id': book_id})
+    
+class SuggestedBookAuthorAssociation(BookAuthorAssociation):
+    def __init__(self, book_id, author_id, _id=None):
+        super().__init__(book_id, author_id, _id)
+
+    def save(self):
+        association_data = {
+            '_id': self._id,
+            'book_id': self.book_id,
+            'author_id': self.author_id,
+        }
+        db.suggested_book_author_associations.replace_one({'_id': self._id}, association_data, upsert=True)

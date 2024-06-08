@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sugerir Livro
+{% endblock title %}
+
+{% block content %}
+    <form action="{% url 'book:suggestbook' %}" method="post">
+        {% csrf_token %}
+        <label for="title">Título</label>
+        <input type="text" name="title" id="title" required>
+
+        <label for="isbn">ISBN</label>
+        <input type="text" name="isbn" id="isbn" required>
+
+        <label for="description">Descrição</label>
+        <input type="text" name="description" id="description">
+
+        <label for="language">Idioma</label>
+        <input type="text" name="language" id="language" required>
+
+        <label for="edition_number">Número da edição</label>
+        <input type="text" name="edition_number" id="edition_number">
+        
+        <label for="publication_date">Data da publicação</label>
+        <input type="date" name="publication_date" id="publication_date" required>
+
+        <label for="edition_date">Data da edição</label>
+        <input type="date" name="edition_date" id="edition_date">
+
+        <label for="pages">Número de páginas</label>
+        <input type="number" name="pages" id="pages" required>
+
+        <label for="size">Tamanho (lar x alt)</label>
+        <input type="text" name="size" id="size" required>
+
+        <label for="publisher">Editora</label>
+        <input type="text" name="publisher" id="publisher" required>
+
+        <button type="submit">Próximo</button>
+    </form>
+{% endblock content %}
