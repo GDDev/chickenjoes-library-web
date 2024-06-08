@@ -104,17 +104,10 @@ class Book:
             'slug': self.slug,
         }
         db.books.replace_one({'_id': self.id}, book_data, upsert=True)
-
-    @staticmethod
-    def find_book_by_id(book_id):
-        return db.books.find_one({'_id': book_id})
     
     @staticmethod
     def find_book_by_search(search):
         found_books = [book for book in Book.find_available_books() if search in book['title'] or search in book['isbn']]
-        # for book in Book.find_available_books():
-        #     if search in book['title'] or search in book['isbn']:
-        #         found_books.append(book)
         return found_books
 
     @staticmethod
@@ -153,7 +146,7 @@ class SuggestedBook(Book):
             '_id': self.id,
             'inside_code': self.inside_code,
             'availability': self.availability,
-            'title': self.title,
+            'title': f'(Suggested) {self.title}',
             'description': self.description,
             'language': self.language,
             'publication_date': self.publication_date,
@@ -183,8 +176,9 @@ class BookAuthorAssociation:
         db.book_author_associations.replace_one({'_id': self._id}, association_data, upsert=True)
 
     @staticmethod
-    def find_books_by_author(author_id):
-        return db.book_author_associations.find({'author_id': author_id})
+    def find_books_by_author(author_id, show_suggested):
+        if isinstance(author_id, str): author_id = ObjectId(author_id)
+        return list(db.suggested_book_author_associations.find({'author_id': author_id})) if show_suggested else list(db.book_author_associations.find({'author_id': author_id}))
 
     @staticmethod
     def find_authors_by_book(book_id):

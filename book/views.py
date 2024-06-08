@@ -15,62 +15,58 @@ class ListBooks(View):
     def get(self, *args, **kwargs):
         books = []
         authors = []        
-        show_suggested = self.request.GET.get('show_suggested', 'false') == 'true'
-
-        if show_suggested:
-            books_data = list(db.suggested_books.find())
-        else:
-            books_data = Book.find_exclusive_books()
-
-        for author in db.authors.find():
-            authors.append(
-                Author(
-                    name=author['name'], 
-                    nacionality=author['nacionality'], 
-                    education=author['education'], 
-                    description=author['description'], 
-                    _id=author['_id']
-                )
-            )
-
+        show_suggested = self.request.GET.get('show_suggested') == 'true'        
         filters = self.request.GET.getlist('filter_by_author')
         search = self.request.GET.get('search')
-        if filters:
-            books_by_author = []
-            for filter in filters:
-                for assoc in BookAuthorAssociation.find_books_by_author(filter):
-                    books_by_author.append(Book.find_book_by_id(assoc['book_id']))
+        books_data = Book.find_exclusive_books()
+        if show_suggested:
+            books_data = list(db.suggested_books.find())
 
-            books_data = [book for book in books_by_author]
+        authors = [
+            Author(
+                name=author['name'], 
+                nacionality=author['nacionality'], 
+                education=author['education'], 
+                description=author['description'], 
+                _id=author['_id']
+            ) for author in db.authors.find()
+        ]
+
+        if filters:
+            for filter in filters:
+                books_data = [db.books.find_one({'_id': assoc['book_id']}) for assoc in BookAuthorAssociation.find_books_by_author(filter, show_suggested)]
             filters = []
         elif search:
             books_data = Book.find_book_by_search(search)
             search = ''
 
         for book in books_data:
-            books.append(
-                Book(
-                inside_code=book['inside_code'],
-                availability=book['availability'],
-                title=book['title'],
-                description=book['description'],
-                language=book['language'],
-                publication_date=book['publication_date'],
-                edition_date=book['edition_date'],
-                pages=book['pages'],
-                size=book['size'],
-                publisher=book['publisher'],
-                edition_number=book['edition_number'],
-                isbn=book['isbn'],
-                slug=book['slug'],
-                _id=book['_id']
+            if book:
+                books.append(
+                    Book(
+                    inside_code=book['inside_code'],
+                    availability=book['availability'],
+                    title=book['title'],
+                    description=book['description'],
+                    language=book['language'],
+                    publication_date=book['publication_date'],
+                    edition_date=book['edition_date'],
+                    pages=book['pages'],
+                    size=book['size'],
+                    publisher=book['publisher'],
+                    edition_number=book['edition_number'],
+                    isbn=book['isbn'],
+                    slug=book['slug'],
+                    _id=book['_id']
+                    )
                 )
-            )
 
         context = {
             self.context_object_name: books,
             'authors': authors,
             'show_suggested': show_suggested,
+            'filters': filters,
+            'search': search,
         }
         return render(self.request, self.template_name, context)
 
