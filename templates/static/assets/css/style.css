@@ -14,7 +14,7 @@
     --secundary-color: #00EAAA;
     --dark-text: rgb(0, 75, 45);
     --light-text: rgb(15, 135, 85);
-    --top-header: #39415e87;
+    --top-header: #FFF;
     --bg-form-login: #1641dec9;
     --bg-form-register: #894c3bbb;
 }
@@ -349,8 +349,8 @@ button, input{
 .lateral-navbar-container ul li, 
 .lateral-navbar-container ul li a, 
 .nav-icon{
-    height: 3rem;
-    width: 3rem;
+    height: 2rem;
+    width: 2rem;
 }
 
 .bottom-container{
