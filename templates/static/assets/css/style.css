@@ -206,29 +206,45 @@ button, input{
 
 .book-list-container{
     height:100%;
-    width: inherit;
-    display: flex;
-    flex-wrap: wrap;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 2rem;
-    justify-content: space-evenly;
-    padding: 1rem 0;
-    overflow-y: auto;
-    margin: 1rem 0;
 }
 
 .book-container{
     background-color: #fff;
-    box-shadow: rgba(0, 50, 100, .8) 0 .1rem .3rem .05em;
-    width: 25%;
-    height: 50%;
-    border-radius: 1rem;
+    width: 100%;
+    height: max-content;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
+    transition: all .4s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.361);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.429);
+    padding: 1rem;
+    background-color: white;
+
+    animation-name: bookContainerAnimation;
+    animation-duration: .7s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes bookContainerAnimation {
+    0% {
+        opacity: 0;
+        margin-top: 10rem;
+    }
+    100% {
+        opacity: 1;
+        margin-top: 0;
+    }
 }
 
 .book-container:hover{
-    transform: scale(1.025);
-    transition: all .1s ease-in-out;
+    transform: scale(1.010);
+    border: 1px solid rgba(0, 0, 0, 0.494);
+    box-shadow: 0px 0px 30px #1755A6;
 }
 
 .book-container a{
@@ -243,12 +259,13 @@ button, input{
 
 .book-image{
     height: 15rem;
-    max-width: auto;
+    max-width: max-content;
+    margin-bottom: 8px;
 }
 
 .book-title{
     font-size: 1.4rem;
-    font-weight: var(--standard-font);
+    font-weight: 600;
     color: var(--dark-text);
     width: 100%;
     text-transform: capitalize;
@@ -270,20 +287,20 @@ button, input{
 }
 
 .book-button{
-    background: none;
+    background-color: var(--secundary-color);
     cursor: pointer;
-    color: var(--dark-text);
+    font-weight: 400;
+    color: black;
     border: none;
     box-shadow: rgba(0, 50, 100, .8) 0 .1rem .3rem .05em;
     border-radius: .5rem;
-    padding: .1rem .5rem;
-    margin-top: auto;
-    margin-bottom: 1rem;
+    padding: 0.7rem 2rem;
+    transition: all .4s ease-in-out;
 }
 
 .book-button:hover, .filter-button:hover, .submit-button:hover{
-    background-color: var(--secundary-color);
-    color: var(--main-color);
+    background-color: #00CD97;
+    color: white;
 }
 
 .right-content-container{
