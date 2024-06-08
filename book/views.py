@@ -13,9 +13,14 @@ class ListBooks(View):
     context_object_name = 'books'
 
     def get(self, *args, **kwargs):
-        books_data = Book.find_exclusive_books()
         books = []
         authors = []        
+        show_suggested = self.request.GET.get('show_suggested', 'false') == 'true'
+
+        if show_suggested:
+            books_data = list(db.suggested_books.find())
+        else:
+            books_data = Book.find_exclusive_books()
 
         for author in db.authors.find():
             authors.append(
@@ -57,7 +62,6 @@ class ListBooks(View):
                 publisher=book['publisher'],
                 edition_number=book['edition_number'],
                 isbn=book['isbn'],
-                image=book.get('image'),
                 slug=book['slug'],
                 _id=book['_id']
                 )
@@ -66,6 +70,7 @@ class ListBooks(View):
         context = {
             self.context_object_name: books,
             'authors': authors,
+            'show_suggested': show_suggested,
         }
         return render(self.request, self.template_name, context)
 
@@ -76,6 +81,10 @@ class DetailBook(View):
 
     def get(self, request, slug):
         book_data = db.books.find_one({'slug': slug})
+        book_is_suggestion = False 
+        if not book_data:
+            book_data = db.suggested_books.find_one({'slug': slug})
+            book_is_suggestion = True
         if not book_data:
             return redirect('book:listbooks')
         else:
@@ -92,11 +101,22 @@ class DetailBook(View):
                 publisher=book_data['publisher'],
                 edition_number=book_data['edition_number'],
                 isbn=book_data['isbn'],
-                image=book_data.get('image'),
                 slug=book_data['slug'],
                 _id=book_data['_id']
             )
-            return render(request, 'book/detail.html', {'book': book})
+
+            if isinstance(book.id, str): book.id = ObjectId(book.id)
+
+            authors = list(db.book_author_associations.find({'book_id': book.id})) or list(db.suggested_book_author_associations.find({'book_id': book.id}))
+            authors = [db.authors.find_one({'_id': author['author_id']}) for author in authors]
+
+            context = {
+                'book': book,
+                'authors': authors,
+                'book_is_suggestion': book_is_suggestion
+            }
+
+            return render(request, 'book/detail.html', context)
 
 
 class AddToCart(View):

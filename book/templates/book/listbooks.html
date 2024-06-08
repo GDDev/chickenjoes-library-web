@@ -25,7 +25,16 @@ Livros
         {% include "partials/_searchbox.html" %}
 
         <div class="leftover-center-content-container">
-            <div class="book-list-container">
+            {% if show_suggested %}
+                <a href="{% url 'book:listbooks' %}?show_suggested=false">
+                    Mostrar livros disponíveis
+                </a>
+            {% else %}
+                <a href="{% url 'book:listbooks' %}?show_suggested=true">
+                    Mostrar livros sugeridos
+                </a>
+            {% endif %}
+            <div class="book-list-container">                
                 {% if books %}
                     {% for book in books %}
                         <div class="book-container">

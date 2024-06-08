@@ -17,11 +17,43 @@
     <h1>{{ book.title }}</h1>
     <p>{{ book.description }}</p>
 
-    <form action="{% url 'book:addtocart' %}" method="get">
-        <input type="hidden" name="id" value="{{ book.id }}">
-        {{ book.id }}
-        {{ book.title }}
-        <input type="submit" value="Reservar">
-    </form>
+    <table>
+        <thead>
+            <caption>Autores</caption>
+            <tr>
+                <th>Nome</th>
+                <th>Nacionalidade</th>
+                <th>Formação</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors %}
+                <tr>
+                    <td>
+                        <h3>{{ author.name }}</h3>
+                    </td>
+                    <td>
+                        <h3>{{ author.nacionality }}</h3>
+                    </td>
+                    <td>
+                        <h3>{{ author.education }}</h3>
+                    </td>
+                    <td>
+                        <h3>{{ author.description }}</h3>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not book_is_suggestion %}
+        <form action="{% url 'book:addtocart' %}" method="get">
+            <input type="hidden" name="id" value="{{ book.id }}">
+            <input type="submit" value="Reservar">
+        </form>
+    {% endif %}
+
+    <a href="{% url 'book:listbooks' %}"><input type="button" value="Voltar"></a>
 
 {% endblock content %}
