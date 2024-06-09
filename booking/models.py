@@ -18,7 +18,6 @@ class Booking:
 
     def __init__(self, customer_id, protocol=None, estimated_checkout_date=None, booking_date=datetime.now(), checkout_date=None, estimated_return_date=None, return_date=None, status='reservado', _id=None):
         self.customer_id = customer_id
-        # TODO: auto-generate protocol
         self.protocol = protocol or self.create_protocol()
         self.status = status
         self.booking_date = booking_date

@@ -65,7 +65,6 @@ class SaveBooking(DispatchLoginRequiredMixin, View):
 
         for book in cart.values():
             BookBooking(booking_id=booking.id, book_id=ObjectId(book['book_id'])).save()
-            # TODO: Find a better way to do this
             Book(book['book_title'], book['book_language'], book['book_publication_date'], book['book_pages'], book['book_size'], book['book_publisher'], book['book_isbn'], book['book_inside_code'], False, book['book_edition_date'], book['book_description'], book['book_edition_number'], slug=book['book_slug'], _id=book['book_id']).save()
         
         del self.request.session['cart']
@@ -97,7 +96,7 @@ class Detail(DispatchLoginRequiredMixin, View):
 
             return render(request, 'booking/detail.html', {'booking': booking, 'books': books})
 
-class CheckOut(View):
+class CheckOut(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         user = self.request.session.get('logged_user')
         if not user:
@@ -125,7 +124,7 @@ class CheckOut(View):
 
         return redirect('booking:list')
 
-class Return(View):
+class Return(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         user = self.request.session.get('logged_user')
         if not user:
@@ -180,7 +179,7 @@ class List(DispatchLoginRequiredMixin, View):
     ordering = ['-id']
     
     def get(self, *args, **kwargs):
-        data = db.bookings.find()
+        data = db.bookings.find({'customer_id': self.request.session['logged_user']['_id']})
         bookings = []        
 
         for booking in data:

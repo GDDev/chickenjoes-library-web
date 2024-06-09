@@ -57,23 +57,25 @@ class Create(BasePerfil):
         cpf = self.request.POST.get('cpf')
         birth_date = self.request.POST.get('birth_date')
 
+        # TODO: encryption
+        if not password == confirm_password:
+            messages.error(
+                self.request,
+                'As senhas não são iguais'
+            )
+            return redirect('userprofile:createuser')
         
-        user = UserProfile(username=username, first_name=first_name, last_name=last_name, email=email, password=password, confirm_password=confirm_password)
-
-        if password:
-            authenticated = UserProfile.authenticate_user(username=username, password=password)
-            
-            if authenticated:
-                UserProfile.login(self.request, user=user)
+        user = UserProfile(birth_date=birth_date, cpf=cpf, first_name=first_name, last_name=last_name, username=username, email=email, password=password)
+        user.save()
 
         messages.success(
             self.request,
-            'Seu cadastro foi criado/atualizado com sucesso.'
+            'Seu cadastro foi efetuado com sucesso.'
         )
 
         self.request.session['cart'] = self.cart
         self.request.session.save()
-        return redirect('user_profile:createuser')
+        return redirect('book:listbooks')
 
 class Update(BasePerfil):
     def post(self, *args, **kwargs):        
