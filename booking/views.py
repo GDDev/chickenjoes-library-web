@@ -4,7 +4,6 @@ from django.views import View
 from django.contrib import messages
 from django.urls import reverse
 from book.models import Book
-from utils import utils
 from .models import BookBooking, Booking
 
 from utils.dbconnect import connect

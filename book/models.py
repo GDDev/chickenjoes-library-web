@@ -48,7 +48,7 @@ class SuggestedAuthor(Author):
 class Book:
     @staticmethod
     def create_inside_code(isbn):
-        return f'LIV{datetime.now().year}{isbn}{datetime.timestamp}'
+        return f'LIV{datetime.now().year}{isbn}{datetime.now().timestamp()}'
 
     def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description=None, edition_number=None, image=None, slug=None, _id=None):
         self.inside_code = inside_code or self.create_inside_code(isbn)

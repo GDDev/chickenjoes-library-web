@@ -8,7 +8,7 @@ db = connect()
 
 class UserProfile:
     def create_inside_code(self):
-        return f'CUS{datetime.now().year}{datetime.timestamp}'
+        return f'CUS{datetime.now().year}{datetime.now().timestamp()}'
 
     def __init__(self, birth_date, cpf, first_name, last_name, username, email, password, inside_code=None, id=None):
         self.inside_code = inside_code or self.create_inside_code()

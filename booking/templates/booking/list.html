@@ -23,7 +23,7 @@ Empréstimos de {{ request.session.logged_user.username }}
                     {% for booking in bookings %}
                     <tr>
                         <th scope="">{{ booking }}</td>
-                        <td>{{ booking.total}}</td>
+                        <td>{{ booking.get_total_books }}</td>
                         <td>{{ booking.status }}</td>
                         <td>
                             <a href="{% url 'booking:detail' booking.id %}">

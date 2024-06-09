@@ -57,6 +57,9 @@ class Booking:
         }
         db.bookings.replace_one({'_id': self.id}, booking_data, upsert=True)
 
+    def get_total_books(self):
+        return len(list(db.book_in_booking.find({'booking_id': self.id})))
+
     @staticmethod
     def get_total_user_books(user_id):
         total = 0
