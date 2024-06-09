@@ -41,24 +41,24 @@ class SaveBooking(DispatchLoginRequiredMixin, View):
         
         cart = self.request.session.get('cart') or {}
 
-        error_msg_estoque = ''
+        for book in cart.values():
+            id = book['book_id']
+            out_of_stock = []
+            book = db.books.find_one({'_id': ObjectId(id)})
+            if book: 
+                if not book['availability']:
+                    title = book['title']
+                    out_of_stock.append(f'Não há mais estoque para o livro: {title}.')
+                    del self.request.session['cart'][id]
+                    self.request.session.save()
 
-        # for book in cart:
-        #     id = str(book['_id'])
-
-        #     # TODO: Check stock
-
-        #     if error_msg_estoque:
-        #         messages.error(
-        #             self.request,
-        #             error_msg_estoque
-        #         )
-
-        #         self.request.session.save()
-        #         return redirect('book:cart')
-            
-        # cart_total = utils.cart_total_qtt(cart)
-        # user_total = Booking.get_total_user_books(user['_id'])
+                if out_of_stock:
+                    for error in out_of_stock: 
+                        messages.error(
+                            self.request,
+                            error
+                        )
+                    return redirect('book:cart')
 
         booking = Booking(user.get('_id'))
         booking.save()
