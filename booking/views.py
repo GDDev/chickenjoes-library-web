@@ -58,16 +58,16 @@ class SaveBooking(DispatchLoginRequiredMixin, View):
         #         self.request.session.save()
         #         return redirect('book:cart')
             
-        cart_total = utils.cart_total_qtt(cart)
-        user_total = Booking.get_total_user_books(user['_id'])
+        # cart_total = utils.cart_total_qtt(cart)
+        # user_total = Booking.get_total_user_books(user['_id'])
 
         booking = Booking(user.get('_id'))
         booking.save()
 
         for book in cart.values():
-            BookBooking(booking_id=booking.id, book_id=book['book_id']).save()
+            BookBooking(booking_id=booking.id, book_id=ObjectId(book['book_id'])).save()
             # TODO: Find a better way to do this
-            Book(book['book_title'], book['book_language'], book['book_publication_date'], book['book_pages'], book['book_size'], book['book_publisher'], book['book_isbn'], book['book_inside_code'], False, book['book_edition_date'], book['book_description'], book['book_edition_number'], image=book['book_image'], slug=book['book_slug'], _id=book['book_id']).save()
+            Book(book['book_title'], book['book_language'], book['book_publication_date'], book['book_pages'], book['book_size'], book['book_publisher'], book['book_isbn'], book['book_inside_code'], False, book['book_edition_date'], book['book_description'], book['book_edition_number'], slug=book['book_slug'], _id=book['book_id']).save()
         
         del self.request.session['cart']
         return redirect('booking:list')

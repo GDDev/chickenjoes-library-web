@@ -1,3 +1,4 @@
+import pprint
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
@@ -42,26 +43,28 @@ class ListBooks(View):
             books_data = Book.find_book_by_search(search)
             search = ''
 
-        for book in books_data:
-            if book:
-                books.append(
-                    Book(
-                    inside_code=book['inside_code'],
-                    availability=book['availability'],
-                    title=book['title'],
-                    description=book['description'],
-                    language=book['language'],
-                    publication_date=book['publication_date'],
-                    edition_date=book['edition_date'],
-                    pages=book['pages'],
-                    size=book['size'],
-                    publisher=book['publisher'],
-                    edition_number=book['edition_number'],
-                    isbn=book['isbn'],
-                    slug=book['slug'],
-                    _id=book['_id']
-                    )
-                )
+        books = books_data
+
+        # for book in books_data:
+        #     if book:
+        #         books.append(
+        #             Book(
+        #             inside_code=book['inside_code'],
+        #             availability=book['availability'],
+        #             title=book['title'],
+        #             description=book['description'],
+        #             language=book['language'],
+        #             publication_date=book['publication_date'],
+        #             edition_date=book['edition_date'],
+        #             pages=book['pages'],
+        #             size=book['size'],
+        #             publisher=book['publisher'],
+        #             edition_number=book['edition_number'],
+        #             isbn=book['isbn'],
+        #             slug=book['slug'],
+        #             _id=book['_id']
+        #             )
+        #         )
 
         context = {
             self.context_object_name: books,
@@ -121,15 +124,13 @@ class AddToCart(View):
     def get(self, *args, **kwargs):
         # http_referer = self.request.META.get('HTTP_REFERER', reverse('book:listbooks'))
         id = self.request.GET.get('id')
-        if not id:
+        id_obj = ObjectId(id)
+        book_data = db.books.find_one({'_id': id_obj})
+        if not id or not book_data:
             messages.error(
                 self.request,
                 f'Livro não encontrado.{self.request.GET}'
             )
-            return redirect('book:listbooks')
-        id_obj = ObjectId(id)
-        book_data = db.books.find_one({'_id': id_obj})
-        if not book_data:
             return redirect('book:listbooks')
         
         book = Book(
@@ -154,14 +155,15 @@ class AddToCart(View):
             self.request.session['cart'] = {}
             self.request.session.save()
 
-        if id in self.request.session['cart']:
+        cart = self.request.session['cart']
+
+        if id in cart:
             messages.warning(
                 self.request,
                 'Livro já no carrinho.'
             )
             return redirect('book:listbooks')
         
-        cart = self.request.session['cart']
         if self.request.session.get('logged_user'):
             if Booking.get_total_user_books(self.request.session['logged_user']['_id']) + len(cart) >= 5:
                 messages.error(

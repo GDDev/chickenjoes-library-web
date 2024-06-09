@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from bson import ObjectId
 from django.forms import ValidationError
 from utils.validacpf import valida_cpf
@@ -7,8 +7,11 @@ from utils.dbconnect import connect
 db = connect()
 
 class UserProfile:
-    def __init__(self, inside_code, birth_date, cpf, first_name, last_name, username, email, password, image=None, id=None):
-        self.inside_code = inside_code
+    def create_inside_code(self):
+        return f'CUS{datetime.now().year}{datetime.timestamp}'
+
+    def __init__(self, birth_date, cpf, first_name, last_name, username, email, password, inside_code=None, id=None):
+        self.inside_code = inside_code or self.create_inside_code()
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -17,7 +20,6 @@ class UserProfile:
         self.user_type ='customer'
         self.birth_date = birth_date
         self.cpf = cpf
-        self.image = image
         self.id = id or ObjectId()
 
     @staticmethod
@@ -39,7 +41,6 @@ class UserProfile:
             'password': self.password,
             'birth_date': self.birth_date,
             'cpf': self.cpf,
-            'image': self.image,
             'user_type': self.user_type
         }
     

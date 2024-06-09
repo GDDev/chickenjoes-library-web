@@ -1,4 +1,5 @@
 from datetime import datetime
+import pprint
 from utils.dbconnect import connect
 from bson.objectid import ObjectId
 import os
@@ -29,7 +30,7 @@ class Author:
     def __str__(self) -> str:
         return self.name
 
-class suggestedAuthor(Author):
+class SuggestedAuthor(Author):
     def __init__(self, name, nacionality, education, description, _id=None):
         super().__init__(name, nacionality, education, description, _id)
 
@@ -46,11 +47,11 @@ class suggestedAuthor(Author):
 
 class Book:
     @staticmethod
-    def create_inside_code(publication_date, isbn):
-        return f'LIV{datetime.now().year}{isbn}'
+    def create_inside_code(isbn):
+        return f'LIV{datetime.now().year}{isbn}{datetime.timestamp}'
 
     def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description=None, edition_number=None, image=None, slug=None, _id=None):
-        self.inside_code = inside_code or self.create_inside_code(publication_date, isbn)
+        self.inside_code = inside_code or self.create_inside_code(isbn)
         self.availability = availability
         self.title = title
         self.description = description or 'Just another book.'
@@ -63,8 +64,14 @@ class Book:
         self.edition_number = edition_number or 'N/A'
         self.isbn = isbn
         self.image = image
-        self.slug = slug or slugify(isbn)
+        self.slug = slug or slugify(inside_code) if inside_code else slugify(self.create_inside_code(isbn))
         self.id = _id or ObjectId()
+
+    def __eq__(self, other):
+        return self.title == other.title and self.edition_number == other.edition_number and self.isbn == other.isbn if isinstance(other, Book) else False
+    
+    def __hash__(self):
+        return hash((self.title, self.edition_number, self.isbn))
 
     @staticmethod
     def resize_image(img_path, new_height):
@@ -107,28 +114,40 @@ class Book:
     
     @staticmethod
     def find_book_by_search(search):
-        found_books = [book for book in Book.find_available_books() if search in book['title'] or search in book['isbn']]
+        found_books = [book for book in Book.find_available_books() if search in book.title or search in book.isbn]
         return found_books
 
     @staticmethod
     def find_all_books():
-        return db.books.find()
+        return list([
+            Book(
+                title=book['title'], 
+                language=book['language'], 
+                publication_date=book['publication_date'], 
+                pages=book['pages'], 
+                size=book['size'], 
+                publisher=book['publisher'], 
+                isbn=book['isbn'], 
+                inside_code=book['inside_code'], 
+                availability=book['availability'], 
+                edition_date=book['edition_date'], 
+                description=book['description'], 
+                edition_number=book['edition_number'], 
+                slug=book['slug'], 
+                _id=book['_id']
+            ) for book in db.books.find()
+        ])
     
     @staticmethod
     def find_available_books():
-        available_books = [book for book in Book.find_all_books() if book['availability']]
+        available_books = [book for book in Book.find_all_books() if book.availability]
         return available_books
     
     @staticmethod
     def find_exclusive_books():
         available_books = Book.find_available_books()
-        one_timer = []
-        for book in available_books:
-            for one_book in one_timer:
-                if book['title'] == one_book['title'] and book['edition_number'] == one_book['edition_number']:
-                    one_timer.pop()
-            one_timer.append(book)
-        return one_timer
+        one_timer = list(set(available_books))
+        return sorted(one_timer, key=lambda book: (book.title.lower(), book.edition_number))
 
     def __str__(self) -> str:
         return self.title

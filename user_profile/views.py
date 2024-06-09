@@ -10,7 +10,7 @@ import copy
 
 from utils.dbconnect import connect
 
-from . import models
+from .models import UserProfile
 from . import forms
 
 db = connect()
@@ -47,56 +47,24 @@ class BasePerfil(View):
         return self.renderizar
 
 class Create(BasePerfil):
-    def post(self, *args, **kwargs):
-        if not self.userform.is_valid():
-            messages.error(
-                self.request,
-                'Campos obrigatórios não preenchidos corretamente.'
-            )
-            return self.renderizar
+    def post(self, *args, **kwargs): 
+        username = self.request.POST.get('username')
+        password = self.request.POST.get('password')
+        confirm_password = self.request.POST.get('confirm_password')
+        email = self.request.POST.get('email')
+        first_name = self.request.POST.get('first_name')
+        last_name = self.request.POST.get('last_name')
+        cpf = self.request.POST.get('cpf')
+        birth_date = self.request.POST.get('birth_date')
+
         
-        username = self.userform.cleaned_data.get('username')
-        password = self.userform.cleaned_data.get('password')
-        email = self.userform.cleaned_data.get('email')
-        first_name = self.userform.cleaned_data.get('first_name')
-        last_name = self.userform.cleaned_data.get('last_name')
-
-        if self.request.session.get('logged_user'):
-            user = db.users.find_one({'username': self.request.POST.get('username')})
-            if user:
-                user['username'] = username
-                if password:
-                    # TODO: encrypt password
-                    user['password'] = password
-                    
-                user['email'] = email
-                user['first_name'] = first_name
-                user['last_name'] = last_name
-                user.save()
-
-                # if not self.user_profile:
-                #     self.userform.cleaned_data['user'] = user
-                #     profile = models.UserProfile(**self.userform.cleaned_data)
-                #     profile.save()
-                # else:
-                #     profile = self.userform.save(commit=False)
-                #     profile.user = user
-                #     profile.save()
-            
-        else:
-            user = self.userform.save(commit=False)
-            User.set_password(user, password)
-            user.save()
-
-            profile = self.userform.save(commit=False)
-            profile.usuario = user
-            profile.save()
+        user = UserProfile(username=username, first_name=first_name, last_name=last_name, email=email, password=password, confirm_password=confirm_password)
 
         if password:
-            authenticated = models.UserProfile.authenticate_user(username=username, password=password)
+            authenticated = UserProfile.authenticate_user(username=username, password=password)
             
             if authenticated:
-                models.UserProfile.login(self.request, user=user)
+                UserProfile.login(self.request, user=user)
 
         messages.success(
             self.request,
@@ -110,7 +78,6 @@ class Create(BasePerfil):
 class Update(BasePerfil):
     def post(self, *args, **kwargs):        
         username = self.request.POST.get('username')
-        print(username)
         password = self.request.POST.get('password')
         confirmPassword = self.request.POST.get('confirmPassword')
         email = self.request.POST.get('email')
@@ -136,7 +103,7 @@ class Update(BasePerfil):
                 self.request.session['logged_user']['_id'] = str(user.get('_id'))
                 self.request.session.save()
 
-                user = models.UserProfile(
+                user = UserProfile(
                     user['inside_code'],
                     user['birth_date'],
                     user['cpf'],
@@ -172,10 +139,9 @@ class Login(View):
             )
             return redirect('userprofile:createuser')
         
-        user = models.UserProfile.authenticate_user(username, password)
+        user = UserProfile.authenticate_user(username, password)
         if user:
-            print(user)
-            models.UserProfile.login(self.request, user=user)
+            UserProfile.login(self.request, user=user)
             messages.success(
                 self.request,
                 'Login efetuado com sucesso.'
@@ -194,10 +160,10 @@ class Logout(View):
         if self.request.session.get('logged_user'):
             if self.request.session.get('cart'):
                 cart = copy.deepcopy(self.request.session.get('cart'))
-                models.UserProfile.logout(self.request)
+                UserProfile.logout(self.request)
                 self.request.session['cart'] = cart
                 self.request.session.save()
             else:
-                models.UserProfile.logout(self.request)
+                UserProfile.logout(self.request)
         
         return redirect('book:listbooks')
