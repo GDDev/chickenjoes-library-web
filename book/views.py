@@ -51,35 +51,14 @@ class ListBooks(View):
             self.request.session['active_filters'] = filters
             self.request.session.save()
 
-        for filter in self.request.session['active_filters']:
-            books_data = [db.books.find_one({'_id': assoc['book_id']}) for assoc in BookAuthorAssociation.find_books_by_author(filter, show_suggested)]
+        # for filter in self.request.session['active_filters']:
+            books_data = [db.books.find_one({'_id': assoc}) for assoc in BookAuthorAssociation.find_books_by_author(filters)]
             
         if search:
             books_data = Book.find_book_by_search(search, books_data)
             search = ''
 
         books = books_data
-
-        # for book in books_data:
-        #     if book:
-        #         books.append(
-        #             Book(
-        #             inside_code=book['inside_code'],
-        #             availability=book['availability'],
-        #             title=book['title'],
-        #             description=book['description'],
-        #             language=book['language'],
-        #             publication_date=book['publication_date'],
-        #             edition_date=book['edition_date'],
-        #             pages=book['pages'],
-        #             size=book['size'],
-        #             publisher=book['publisher'],
-        #             edition_number=book['edition_number'],
-        #             isbn=book['isbn'],
-        #             slug=book['slug'],
-        #             _id=book['_id']
-        #             )
-        #         )
 
         context = {
             self.context_object_name: books,

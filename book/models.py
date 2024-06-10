@@ -198,9 +198,18 @@ class BookAuthorAssociation:
         db.book_author_associations.replace_one({'_id': self._id}, association_data, upsert=True)
 
     @staticmethod
-    def find_books_by_author(author_id, show_suggested):
-        if isinstance(author_id, str): author_id = ObjectId(author_id)
-        return list(db.suggested_book_author_associations.find({'author_id': author_id})) if show_suggested else list(db.book_author_associations.find({'author_id': author_id}))
+    def find_books_by_author(filters):
+        filters = [ObjectId(author_id) for author_id in filters if isinstance(author_id, str)]
+
+        books = []
+        for filter in filters:
+            [
+                books.append(assoc['book_id']) 
+                for assoc in list(
+                    db.book_author_associations.find({'author_id': filter})
+                )
+            ]
+        return list(set(books))
 
     @staticmethod
     def find_authors_by_book(book_id):
