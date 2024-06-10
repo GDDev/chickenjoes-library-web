@@ -254,11 +254,15 @@ class DetailSuggestion(DispatchLoginRequiredMixin, View):
             if not self.request.session.get('detailing_suggestion'):
                 self.request.session['detailing_suggestion'] = []
 
+            authors = list(db.suggested_book_author_associations.find({'book_id': book_data['_id']}))
+            authors = [db.authors.find_one({'_id': author['author_id']}) for author in authors]
+
             self.request.session['detailing_suggestion'] = str(book_data['_id'])
             self.request.session.save()
 
             context = {
-                'book': book_data
+                'book': book_data,
+                'authors': authors
             }
 
         return render(request, 'user_profile/detail_suggestion.html', context)
