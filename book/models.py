@@ -114,7 +114,10 @@ class Book:
     
     @staticmethod
     def find_book_by_search(search, books):
-        found_books = [book for book in books if search in book.get('title') or search in book.get('isbn')]
+        if isinstance(books[0], Book):
+            found_books = [book for book in books if search in book.title or search in book.isbn]
+        else:
+            found_books = [book for book in books if search in book.get('title') or search in book.get('isbn')]
         return found_books
 
     @staticmethod
