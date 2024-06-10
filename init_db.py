@@ -81,12 +81,12 @@ def init_db():
         for author_id in choosen_authors:
             if not isinstance(book_id, ObjectId): ObjectId(book_id)
             if not isinstance(author_id, ObjectId): ObjectId(author_id)
-            associations.append(
-                {
-                    "book_id": book_id,
-                    "author_id": author_id
-                }
-            )
+            add_author = {
+                "book_id": book_id,
+                "author_id": author_id
+            }
+            if add_author not in associations:
+                associations.append(add_author)
 
     db.book_author_associations.insert_many(associations)
 

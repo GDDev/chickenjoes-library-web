@@ -118,12 +118,13 @@ class Update(BasePerfil):
                 )
                 user.save()                
 
-        UserProfile.login(self.request, user=user)
-
-        messages.success(
-            self.request,
-            'Seu cadastro foi atualizado com sucesso.'
-        )
+        user = UserProfile.authenticate_user(username, password)
+        if user:
+            UserProfile.login(self.request, user=user)
+            messages.success(
+                self.request,
+                'Seu cadastro foi atualizado com sucesso.'
+            )
 
         self.request.session['cart'] = self.cart
         self.request.session.save()
