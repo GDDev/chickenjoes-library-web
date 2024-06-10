@@ -53,7 +53,9 @@
     {% if not book_is_suggestion %}
         <form action="{% url 'book:addtocart' %}" method="get">
             <input type="hidden" name="id" value="{{ book.id }}">
-            <input type="submit" value="Reservar">
+            {% if book.availability %}
+                <input type="submit" value="Reservar">
+            {% endif %}
         </form>
     {% endif %}
 

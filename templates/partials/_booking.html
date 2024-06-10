@@ -55,6 +55,14 @@
                             </form>
                         {% endif %}
                     </td>
+                    {% if booking.status == 'reservado' %}
+                        <td>
+                            <form action="{% url 'booking:cancel' %}" method="get">
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                <button class="btn btn-primary" type="submit">Cancelar</button>
+                            </form>
+                        </td>
+                    {% endif %}
                 </tr>
             </table>
         </div>

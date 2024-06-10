@@ -122,6 +122,20 @@ class CheckOut(DispatchLoginRequiredMixin, View):
             booking = booking.checkout()
 
         return redirect('booking:list')
+    
+class CancelBooking(DispatchLoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        if self.request.session.get('logged_user'):
+            booking_id = self.request.GET.get('booking_id')
+            if not isinstance(booking_id, ObjectId): booking_id = ObjectId(booking_id)
+            for book in list(db.book_in_booking.find({'booking_id': booking_id})):
+                db.books.update_one({'_id': book['book_id']}, {'$set': {'availability': True}})
+            db.bookings.update_one({'_id': booking_id}, {'$set': {'status': 'cancelado'}})
+            messages.success(
+                self.request,
+                'Reserva cancelada com sucesso.'
+            )
+        return redirect('booking:list')
 
 class Return(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):

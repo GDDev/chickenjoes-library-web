@@ -48,22 +48,24 @@ Livros
             <div class="book-list-container">                
                 {% if books %}
                     {% for book in books %}
-                        <div class="book-container">
-                            <a href="{% url 'book:detail' book.slug %}"> 
-                                {% if book.image %}
-                                    <img src="{{  book.image.url }}" alt="{{ book.title }}" class="book-image">
-                                {% else %}
-                                    <img src="{% static 'assets/img/default.jpg'%}" alt="{{ book.title }}" class="book-image">
-                                {% endif %}
-                                <h3 class="book-title" title="{{ book.title }}">{{ book.title }}</h3>
-                                {% if book.edition_number != 'N/A' %}
-                                    <p class="book-description" title="{{ book.edition_number }}">Número da edição: {{ book.edition_number }}</p>
-                                {% else %}
-                                    <p class="book-description" title="{{ book.description }}">{{ book.description }}</p>
-                                {% endif %}
-                                <button type="submit" class="book-button">Reservar</button>
-                            </a>
-                        </div>
+                        {% if book.availability %}
+                            <div class="book-container">
+                                <a href="{% url 'book:detail' book.slug %}"> 
+                                    {% if book.image %}
+                                        <img src="{{  book.image.url }}" alt="{{ book.title }}" class="book-image">
+                                    {% else %}
+                                        <img src="{% static 'assets/img/default.jpg'%}" alt="{{ book.title }}" class="book-image">
+                                    {% endif %}
+                                    <h3 class="book-title" title="{{ book.title }}">{{ book.title }}</h3>
+                                    {% if book.edition_number != 'N/A' %}
+                                        <p class="book-description" title="{{ book.edition_number }}">Número da edição: {{ book.edition_number }}</p>
+                                    {% else %}
+                                        <p class="book-description" title="{{ book.description }}">{{ book.description }}</p>
+                                    {% endif %}
+                                    <button type="submit" class="book-button">Reservar</button>
+                                </a>
+                            </div>
+                        {% endif %}
                     {% endfor %}    
                 {% else %}
                     <h1>Não há livros para mostrar.</h1>                    
