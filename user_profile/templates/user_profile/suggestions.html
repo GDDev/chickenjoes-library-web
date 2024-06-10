@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Minhas Sugestões
+{% endblock title %}
+
+{% block content %}
+
+    <table>
+        <caption>Livros sugeridos</caption>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Edição</th>
+                <th>ISBN</th>
+                <th>Mais detalhes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for suggestion in suggestions %}
+                <tr>
+                    <td>{{ suggestion.title }}</td>
+                    <td>{{ suggestion.edition_number }}</td>
+                    <td>{{ suggestion.isbn }}</td>
+                    <td>
+                        <a href="{% url 'userprofile:detail' suggestion.slug %}">Ver mais</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content %}

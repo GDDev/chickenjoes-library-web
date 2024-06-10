@@ -234,7 +234,11 @@ class SuggestBook(DispatchLoginRequiredMixin, View):
         edition_number = self.request.POST.get('edition_number')
         isbn = self.request.POST.get('isbn')
 
+        user_id = self.request.session['logged_user']['_id']
+        if not isinstance(user_id, ObjectId): user_id = ObjectId(user_id)
+
         book_data = {
+            'user_id': user_id,
             'title': title,
             'description': description,
             'language': language,
@@ -247,12 +251,75 @@ class SuggestBook(DispatchLoginRequiredMixin, View):
             'isbn': isbn,
         }
 
-        book = SuggestedBook(title=title, language=language, publication_date=publication_date, pages=pages, size=size, publisher=publisher, isbn=isbn, edition_date=edition_date, description=description, edition_number=edition_number)
+        SuggestedBook(user_id=user_id, title=title, language=language, publication_date=publication_date, pages=pages, size=size, publisher=publisher, isbn=isbn, edition_date=edition_date, description=description, edition_number=edition_number)
 
-        self.request.session['suggestion'] = book_data
-        self.request.session.save()
+        # self.request.session['suggestion'] = book_data
+        # self.request.session.save()
 
         return redirect('book:assocauthor')
+    
+class UpdateSuggestion(DispatchLoginRequiredMixin, View):
+    def post(self, *args, **kwargs):
+        if self.request.session.get('logged_user'):
+            title = self.request.POST.get('title')
+            description = self.request.POST.get('description')
+            language = self.request.POST.get('language')
+            publication_date = self.request.POST.get('publication_date')
+            edition_date = self.request.POST.get('edition_date')
+            pages = self.request.POST.get('pages')
+            size = self.request.POST.get('size')
+            publisher = self.request.POST.get('publisher')
+            edition_number = self.request.POST.get('edition_number')
+            isbn = self.request.POST.get('isbn')
+            slug = self.request.POST.get('slug')
+
+            user_id = self.request.session['logged_user']['_id']
+            if not isinstance(user_id, ObjectId): user_id = ObjectId(user_id)
+
+            book_data = db.suggested_books.find_one({'slug': slug})
+            if book_data:
+                if not isinstance(book_data['_id'], ObjectId): book_data['_id'] = ObjectId(book_data['_id'])
+                SuggestedBook(
+                    _id=book_data['_id'],
+                    user_id=user_id, 
+                    title=title, 
+                    language=language, 
+                    publication_date=publication_date, 
+                    pages=pages, 
+                    size=size, 
+                    publisher=publisher, 
+                    isbn=isbn, 
+                    inside_code=book_data['inside_code'],
+                    availability=book_data['availability'],
+                    edition_date=edition_date, 
+                    description=description, 
+                    edition_number=edition_number,
+                    slug=book_data['slug']
+                ).save()
+        return redirect('userprofile:suggestions')
+    
+class DeleteSuggestion(DispatchLoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        if self.request.session.get('logged_user'):
+            user_id = ObjectId(self.request.session['logged_user']['_id']) if not isinstance(self.request.session['logged_user']['_id'], ObjectId) else self.request.session['logged_user']['_id']
+
+            suggestion_id = ObjectId(self.request.session['detailing_suggestion'])
+            suggestions = list(db.suggested_books.find({'user_id': user_id}))
+            
+            for suggestion in suggestions:
+                if suggestion_id == suggestion.get('_id'):
+                    for assoc in list(db.suggested_book_author_associations.find({'book_id': suggestion_id})):
+                        db.suggested_book_author_associations.delete_one({'_id': assoc['_id']})
+                    db.suggested_books.delete_one({'_id': suggestion_id})
+                    messages.success(
+                        self.request,
+                        'Sugestão excluída com sucesso.'
+                    )
+            
+            del self.request.session['detailing_suggestion']
+            self.request.session.save()
+
+        return redirect('userprofile:suggestions')
 
 class SuggestAuthor(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
@@ -299,6 +366,7 @@ class SendSuggestion(DispatchLoginRequiredMixin, View):
             book = self.request.session['suggestion']
             
             book = SuggestedBook(
+                user_id=ObjectId(book['user_id']),
                 title=book['title'],
                 language=book['language'],
                 publication_date=book['publication_date'],

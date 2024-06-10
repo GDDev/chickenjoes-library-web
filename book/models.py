@@ -156,8 +156,9 @@ class Book:
         return self.title
     
 class SuggestedBook(Book):
-    def __init__(self, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description=None, edition_number=None, image=None, slug=None, _id=None):
+    def __init__(self, user_id, title, language, publication_date, pages, size, publisher, isbn, inside_code=None, availability=True, edition_date=None, description=None, edition_number=None, image=None, slug=None, _id=None):
         super().__init__(title, language, publication_date, pages, size, publisher, isbn, inside_code, availability, edition_date, description, edition_number, image, slug, _id)
+        self.user_id = user_id
 
     def save(self):
         if self.image:
@@ -166,9 +167,10 @@ class SuggestedBook(Book):
 
         book_data = {
             '_id': self.id,
+            'user_id': self.user_id,
             'inside_code': self.inside_code,
             'availability': self.availability,
-            'title': f'(Suggested) {self.title}',
+            'title': f'(Sugestão) {self.title}',
             'description': self.description,
             'language': self.language,
             'publication_date': self.publication_date,

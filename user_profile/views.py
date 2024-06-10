@@ -7,6 +7,7 @@ import copy
 from utils.dbconnect import connect
 from booking.views import DispatchLoginRequiredMixin
 from .models import Fine, UserProfile
+from book.models import SuggestedBook
 from . import forms
 
 db = connect()
@@ -222,3 +223,42 @@ class ListFines(DispatchLoginRequiredMixin, View):
             'fines': fines
         }
         return render(self.request, 'user_profile/fines.html', context)
+
+class ListSuggestions(DispatchLoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        context = {}
+        if self.request.session.get('logged_user'):
+            user_id = self.request.session['logged_user']['_id']
+            if not isinstance(user_id, ObjectId): user_id = ObjectId(user_id)
+            suggestions = list(db.suggested_books.find({'user_id': user_id}))
+
+            context = {
+                'suggestions': suggestions
+            }
+        return render(self.request, 'user_profile/suggestions.html', context)
+        
+class DetailSuggestion(DispatchLoginRequiredMixin, View):
+    slug_url_kwarg = 'slug'
+    def get(self, request, slug):
+        context = {}
+        if self.request.session.get('logged_user'):
+        
+            book_data = db.suggested_books.find_one({'slug': slug})
+            if not book_data:
+                messages.error(
+                    request,
+                    'Sugestão não encontrada.'
+                )
+                return redirect('userprofile:suggestions')
+            
+            if not self.request.session.get('detailing_suggestion'):
+                self.request.session['detailing_suggestion'] = []
+
+            self.request.session['detailing_suggestion'] = str(book_data['_id'])
+            self.request.session.save()
+
+            context = {
+                'book': book_data
+            }
+
+        return render(request, 'user_profile/detail_suggestion.html', context)

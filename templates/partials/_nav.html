@@ -22,20 +22,8 @@
         </li>
         {% if request.session.logged_user %}
             <li>
-                <a href="{% url 'booking:list' %}">
-                    <img src="{% static 'assets/img/livro.png'%}" alt="books icon" class="nav-icon">
-                    <span class="nav-text">Reservas</span>
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'userprofile:fines' %}">
-                    <img src="{% static 'assets/img/multa.png'%}" alt="books icon" class="nav-icon">
-                    <span class="nav-text">Multas</span>
-                </a>
-            </li>
-            <li>
                 <a href="{% url 'book:suggestbook' %}">
-                    <img src="{% static 'assets/img/ideia.png'%}" alt="books icon" class="nav-icon">
+                    <img src="{% static 'assets/img/ideia.png'%}" alt="suggest books icon" class="nav-icon">
                     <span class="nav-text">Sugerir Livro</span>
                 </a>
             </li>

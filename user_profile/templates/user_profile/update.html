@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Atualizar perfil
@@ -7,6 +8,29 @@ Atualizar perfil
 {% block content %}
 
 {% if request.session.logged_user %}
+    <div>
+        <ul>
+            <li>
+                <a href="{% url 'booking:list' %}">
+                    <img src="{% static 'assets/img/livro.png'%}" alt="bookings icon" class="nav-icon">
+                    <span>Reservas</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'userprofile:fines' %}">
+                    <img src="{% static 'assets/img/multa.png'%}" alt="fines icon" class="nav-icon">
+                    <span >Multas</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'userprofile:suggestions' %}">
+                    <img src="{% static 'assets/img/ideia.png' %}" alt="suggestions icon" class="nav-icon">
+                    <span>Minhas sugestões</span>
+                </a>
+            </li>
+        </uL>
+    </div>
+
     <div class="user-update">    
         <div class="form-update">
             {% block signinheader %}

@@ -8,8 +8,10 @@ urlpatterns = [
     path('', views.Create.as_view(), name='createuser'),
     path('updateuser/', views.Update.as_view(), name='update'),
     path('fines/', views.ListFines.as_view(), name='fines'),
+    path('suggestions/', views.ListSuggestions.as_view(), name='suggestions'),
     path('login/', views.Login.as_view(), name='login'),
     path('logout/', views.Logout.as_view(), name='logout'),
     path('delete/', views.Delete.as_view(), name='delete'),
+    path('<slug>/', views.DetailSuggestion.as_view(), name="detail"),
 ]
 

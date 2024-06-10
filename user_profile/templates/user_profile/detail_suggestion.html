@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+    {{ book.title }}
+{% endblock title %}
+
+{% block content %}
+    {% if book.image %}
+        <img src="{{ book.image.url }}">
+    {% else %}
+        <img src="{% static 'assets/img/default.jpg'%}" alt="{{ book.title }}">
+    {% endif %}
+
+    <form action="{% url 'book:updatesuggestion' %}" method="post">
+        {% csrf_token %}
+        <label for="title">Título</label>
+        <input type="text" name="title" value="{{ book.title }}">
+
+        <label for="isbn">ISBN</label>
+        <input type="text" name="isbn" value="{{ book.isbn }}">
+
+        <label for="description">Descrição</label>
+        <input type="text" name="description" value="{{ book.description }}">
+
+        <label for="language">Idioma</label>
+        <input type="text" name="language" value="{{ book.language }}">
+
+        <label for="edition_number">Número da edição</label>
+        <input type="text" name="edition_number" value="{{ book.edition_number }}">
+        
+        <label for="publication_date">Data da publicação</label>
+        <input type="date" name="publication_date" value="{{ book.publication_date }}">
+
+        <label for="edition_date">Data da edição</label>
+        <input type="date" name="edition_date" value="{{ book.edition_date }}">
+
+        <label for="pages">Número de páginas</label>
+        <input type="number" name="pages" value="{{ book.pages }}">
+
+        <label for="size">Tamanho (lar x alt)</label>
+        <input type="text" name="size" value="{{ book.size }}">
+
+        <label for="publisher">Editora</label>
+        <input type="text" name="publisher" value="{{ book.publisher }}">
+
+        <input type="hidden" name="slug" value="{{ book.slug }}">
+        <button type="submit">Editar</button>
+        <a href="{% url 'book:deletesuggestion' %}">
+            <input type="button" value="Excluir sugestão">
+        </a>
+    </form>
+
+    <table>
+        <thead>
+            <caption>Autores</caption>
+            <tr>
+                <th>Nome</th>
+                <th>Nacionalidade</th>
+                <th>Formação</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors %}
+                <tr>
+                    <td>
+                        <h3>{{ author.name }}</h3>
+                    </td>
+                    <td>
+                        <h3>{{ author.nacionality }}</h3>
+                    </td>
+                    <td>
+                        <h3>{{ author.education }}</h3>
+                    </td>
+                    <td>
+                        <h3>{{ author.description }}</h3>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'userprofile:suggestions' %}">
+        <input type="button" value="Voltar">
+    </a>
+{% endblock content %}
