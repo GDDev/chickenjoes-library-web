@@ -3,6 +3,8 @@
 from pymongo import MongoClient
 from datetime import date, datetime
 from book.models import Author, Book
+from user_profile.models import UserProfile, Fine
+from booking.models import Booking, BookBooking
 from utils.dbconnect import connect
 from bson import ObjectId
 import random
@@ -33,7 +35,7 @@ def init_db():
             Book(
                 title=f'Livro #{i+1}', 
                 language='Pt-Br', 
-                publication_date=f'{date(rand_year, rand_month, rand_day)}', 
+                publication_date=str({date(rand_year, rand_month, rand_day)}), 
                 pages=random.randrange(50, 1000), 
                 size='12 x 19', 
                 publisher='Super Editora', 
@@ -41,6 +43,16 @@ def init_db():
                 description=f'Livro #{i+1} é um ótimo livro.', 
                 edition_number=random.randrange(1, 30)
             )
+        )
+
+    user = UserProfile(
+            birth_date= str(date(1978, 6, 15)), 
+            cpf= '12345678', 
+            first_name= 'Calo', 
+            last_name= 'Teiro', 
+            username= 'paganada', 
+            email= 'sodoucalote@caloteiro.com', 
+            password= 'pagoquandopuder'
         )
 
     authors = [
@@ -89,6 +101,60 @@ def init_db():
                 associations.append(add_author)
 
     db.book_author_associations.insert_many(associations)
+
+    user = {
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'username': user.username,
+        'email': user.email,
+        'password': user.password,
+        'birth_date': user.birth_date,
+        'cpf': user.cpf
+    }
+
+    user_id = db.users.insert_one(user).inserted_id
+
+    booking = Booking(
+            customer_id=user_id, 
+            booking_date=datetime(1997, 2, 20), 
+            checkout_date=datetime(1997, 2, 21), 
+            estimated_return_date=datetime(1997, 3, 23), 
+            return_date=datetime(1997, 3, 24), 
+            status='atrasado'
+        )
+    
+    booking = {
+        'customer_id': booking.customer_id,
+        'protocol': booking.protocol,
+        'status': 'atrasado',
+        'booking_date': booking.booking_date,
+        'estimated_checkout_date': booking.estimated_checkout_date,
+        'checkout_date': booking.checkout_date,
+        'estimated_return_date': booking.estimated_return_date,
+        'return_date': booking.return_date
+    }
+    booking_id = db.bookings.insert_one(booking).inserted_id
+
+    book_in_booking = {
+        'booking_id': booking_id,
+        'book_id': books_ids[0]
+    }
+    db.book_in_booking.insert_one(book_in_booking)
+
+    fine = Fine(
+            customer_id=user_id, 
+            booking_id=booking_id,
+            created_date=datetime(1997, 3, 24), 
+            fine_value=20.0
+        )
+    
+    fine = {
+        'customer_id': fine.customer_id,
+        'booking_id': fine.booking_id,
+        'created_date': fine.created_date,
+        'fine_value': fine.fine_value
+    }
+    db.fines.insert_one(fine)
 
 
 if __name__ == "__main__":

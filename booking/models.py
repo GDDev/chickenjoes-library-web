@@ -38,7 +38,8 @@ class Booking:
         self.status = 'devolvido'
         self.return_date = datetime.now()
         if self.estimated_return_date and self.return_date > self.estimated_return_date:
-            UserProfile.fine(customer_id)
+            self.status = 'atrasado'
+            UserProfile.fine(customer_id, self.id)
         self.save()
         return self
 

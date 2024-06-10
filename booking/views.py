@@ -60,7 +60,7 @@ class SaveBooking(DispatchLoginRequiredMixin, View):
                         )
                     return redirect('book:cart')
 
-        booking = Booking(user.get('_id'))
+        booking = Booking(ObjectId(user.get('_id')))
         booking.save()
 
         for book in cart.values():
@@ -179,7 +179,7 @@ class List(DispatchLoginRequiredMixin, View):
     ordering = ['-id']
     
     def get(self, *args, **kwargs):
-        data = db.bookings.find({'customer_id': self.request.session['logged_user']['_id']})
+        data = db.bookings.find({'customer_id': ObjectId(self.request.session['logged_user']['_id'])})
         bookings = []        
 
         for booking in data:
