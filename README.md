@@ -25,9 +25,19 @@ And activate it (if on Windows):
 .\.venv\Scripts\activate
 ```
 
+Upgrade PIP:
+```
+python -m pip install --upgrade pip
+```
+
 Then, you can install the requirements for this project:
 ```
 python -m pip install -r requirements.txt
+```
+
+Now let's feed the database:
+```
+python manage.py initdb
 ```
 
 Once that's out of the way, you should be able to launch the localhost server:

@@ -13,7 +13,7 @@ db = connect()
 class DispatchLoginRequiredMixin(View):
     def dispatch(self, request, *args, **kwargs):
         if not self.request.session.get('logged_user'):
-            return redirect('userprofile:login')
+            return redirect('userprofile:createuser')
         
         return super().dispatch(request, *args, **kwargs)
     

@@ -7,29 +7,34 @@ Livros
 {% endblock title %}
 
 {% block content %}
-    {% if not show_suggested %}
-        <aside class="left-content-container">
-            <div class="filter-list-container">
-                <form action="{% url 'book:listbooks' %}" method="get" class="filter-container">
-                    <h2 class="filter-title">Autor</h2>
-                    {% for author in authors %}
-                        <input type="checkbox" name="filter_by_author" id="{{ author.name.lower }}" value="{{ author.id }}">
-                        <label for="filter_by_author">{{ author.name }}</label></br>
-                    {% endfor %}
+    <aside class="left-content-container">
+        <div class="filter-list-container">
+            <form action="{% url 'book:listbooks' %}" method="get" class="filter-container">
+                <h2 class="filter-title">Autor</h2>
+                {% for author in authors %}
+                    <input type="checkbox" name="filter_by_author" id="{{ author.name.lower }}" value="{{ author.id }}">
+                    <label for="filter_by_author">{{ author.name }}</label></br>
+                {% endfor %}
 
-                    <button type="submit" class="filter-button">Filtrar</button>
-                </form>
-            </div>
-        </aside>
-    {% endif %}
+                <button type="submit" class="filter-button">Filtrar</button>
+            </form>
+        </div>
+    </aside>
 
     <section class="center-content-container">
-        {% if not show_suggested %}
-            {% include "partials/_searchbox.html" %}
-        {% endif %}
+        {% include "partials/_searchbox.html" %}
 
         <div class="leftover-center-content-container">
             {% if show_suggested %}
+                <style>
+                    .top-center-content-container{
+                        display: hidden;
+                    }
+                    .filter-list-container{
+                        visibility: hidden;
+                    }
+                </style>
+
                 <a href="{% url 'book:listbooks' %}?show_suggested=false">
                     Mostrar livros disponíveis
                 </a>

@@ -28,6 +28,12 @@
                 </a>
             </li>
             <li>
+                <a href="{% url 'book:suggestbook' %}">
+                    <img src="{% static 'assets/img/livro.png'%}" alt="books icon" class="nav-icon">
+                    <span class="nav-text">Sugerir Livro</span>
+                </a>
+            </li>
+            <li>
                 <a href="{% url "userprofile:logout" %}">
                     <img src="{% static 'assets/img/logout.png'%}" alt="logout icon" class="nav-icon">
                     <span class="nav-text">Sair</span>

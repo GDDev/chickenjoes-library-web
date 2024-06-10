@@ -118,6 +118,8 @@ class Update(BasePerfil):
                 )
                 user.save()                
 
+        UserProfile.login(self.request, user=user)
+
         messages.success(
             self.request,
             'Seu cadastro foi atualizado com sucesso.'

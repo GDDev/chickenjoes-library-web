@@ -6,6 +6,7 @@ from django.contrib import messages
 
 from booking.models import Booking
 from .models import Book, Author, BookAuthorAssociation, SuggestedBook, SuggestedBookAuthorAssociation
+from booking.views import DispatchLoginRequiredMixin
 from bson.objectid import ObjectId
 
 from utils.dbconnect import connect
@@ -218,7 +219,7 @@ class Cart(View):
         }
         return render(self.request, 'book/cart.html', context)
     
-class SuggestBook(View):
+class SuggestBook(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         return render(self.request, 'book/suggestbook.html')
 
@@ -261,11 +262,11 @@ class SuggestBook(View):
 
         return redirect('book:assocauthor')
 
-class SuggestAuthor(View):
+class SuggestAuthor(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         return redirect('book:listbooks')
     
-class AssocAuthor(View):
+class AssocAuthor(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         if not self.request.session.get('suggestion'):
             messages.error(
@@ -293,7 +294,7 @@ class AssocAuthor(View):
 
         return render(self.request, 'book/assocauthor.html', context)
 
-class SendSuggestion(View):
+class SendSuggestion(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         if not self.request.session.get('suggestion'):
             messages.error(
@@ -334,7 +335,7 @@ class SendSuggestion(View):
 
                 return redirect('book:listbooks')
 
-class AddAuthorToList(View):
+class AddAuthorToList(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         id = self.request.GET.get('select_authors')
         if not id:
@@ -368,7 +369,7 @@ class AddAuthorToList(View):
         self.request.session.save()
         return redirect('book:assocauthor')
     
-class RemoveAuthorFromList(View):
+class RemoveAuthorFromList(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         id = self.request.GET.get('id')
         if not id or not self.request.session.get('assocauthors'):
