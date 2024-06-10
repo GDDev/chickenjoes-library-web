@@ -65,13 +65,24 @@ class Create(BasePerfil):
             )
             return redirect('userprofile:createuser')
         
-        user = UserProfile(birth_date=birth_date, cpf=cpf, first_name=first_name, last_name=last_name, username=username, email=email, password=password)
+        user = UserProfile(
+            birth_date=birth_date, 
+            cpf=cpf, 
+            first_name=first_name, 
+            last_name=last_name, 
+            username=username, 
+            email=email, 
+            password=password
+        )
         user.save()
 
-        messages.success(
-            self.request,
-            'Seu cadastro foi efetuado com sucesso.'
-        )
+        user = UserProfile.authenticate_user(username, password)
+        if user:
+            UserProfile.login(self.request, user=user)
+            messages.success(
+                self.request,
+                'Seu cadastro foi efetuado com sucesso.'
+            )
 
         self.request.session['cart'] = self.cart
         self.request.session.save()

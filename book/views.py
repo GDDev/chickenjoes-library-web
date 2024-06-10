@@ -36,6 +36,7 @@ class ListBooks(View):
             ) for author in db.authors.find()
         ]
 
+        # TODO: FIX THIS
         if filters:
             for filter in filters:
                 books_data = [db.books.find_one({'_id': assoc['book_id']}) for assoc in BookAuthorAssociation.find_books_by_author(filter, show_suggested)]

@@ -61,7 +61,8 @@ class UserProfile:
         else:
             error_messages['login'] = 'Impossível fazer login. Usuário já logado.'
         if error_messages:
-            raise ValidationError(error_messages) 
+            raise ValidationError(error_messages)
+        return request 
 
     @staticmethod
     def logout(request):
