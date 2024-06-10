@@ -13,16 +13,22 @@ from utils.dbconnect import connect
 db = connect()
 
 class ListBooks(View):
-    template_name = 'book/listbooks.html'
     context_object_name = 'books'
 
     def get(self, *args, **kwargs):
         books = []
         authors = []        
-        show_suggested = self.request.GET.get('show_suggested') == 'true'        
+        show_suggested = self.request.GET.get('show_suggested') == 'true' 
+        reset_filters = self.request.GET.get('reset_filters') == 'true'   
         filters = self.request.GET.getlist('filter_by_author')
         search = self.request.GET.get('search')
+
+        if reset_filters:
+            self.request.session['active_filters'] = []
+            filters = []
+
         books_data = Book.find_exclusive_books()
+
         if show_suggested:
             books_data = list(db.suggested_books.find())
 
@@ -37,12 +43,19 @@ class ListBooks(View):
         ]
 
         # TODO: FIX THIS
+        
+        if not self.request.session.get('active_filters'):
+            self.request.session['active_filters'] = []
+
         if filters:
-            for filter in filters:
-                books_data = [db.books.find_one({'_id': assoc['book_id']}) for assoc in BookAuthorAssociation.find_books_by_author(filter, show_suggested)]
-            filters = []
-        elif search:
-            books_data = Book.find_book_by_search(search)
+            self.request.session['active_filters'] = filters
+            self.request.session.save()
+
+        for filter in self.request.session['active_filters']:
+            books_data = [db.books.find_one({'_id': assoc['book_id']}) for assoc in BookAuthorAssociation.find_books_by_author(filter, show_suggested)]
+            
+        if search:
+            books_data = Book.find_book_by_search(search, books_data)
             search = ''
 
         books = books_data
@@ -75,7 +88,7 @@ class ListBooks(View):
             'filters': filters,
             'search': search,
         }
-        return render(self.request, self.template_name, context)
+        return render(self.request, 'book/listbooks.html', context)
 
 class DetailBook(View):
     template_name = 'book/detail.html'

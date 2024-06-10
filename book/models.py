@@ -113,8 +113,8 @@ class Book:
         db.books.replace_one({'_id': self.id}, book_data, upsert=True)
     
     @staticmethod
-    def find_book_by_search(search):
-        found_books = [book for book in Book.find_available_books() if search in book.title or search in book.isbn]
+    def find_book_by_search(search, books):
+        found_books = [book for book in books if search in book.get('title') or search in book.get('isbn')]
         return found_books
 
     @staticmethod

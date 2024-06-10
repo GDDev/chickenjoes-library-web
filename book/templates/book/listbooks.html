@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load static %}
+{% load custom_tags %}
 
 {% block title %}
 Livros
@@ -12,11 +13,12 @@ Livros
             <form action="{% url 'book:listbooks' %}" method="get" class="filter-container">
                 <h2 class="filter-title">Autor</h2>
                 {% for author in authors %}
-                    <input type="checkbox" name="filter_by_author" id="{{ author.name.lower }}" value="{{ author.id }}">
+                    <input type="checkbox" name="filter_by_author" id="{{ author.name.lower }}" value="{{ author.id }}" {% for id in request.session.active_filters %}{% if author.id|to_str == id %}checked{% endif %}{% endfor %}>
                     <label for="filter_by_author">{{ author.name }}</label></br>
                 {% endfor %}
 
-                <button type="submit" class="filter-button">Filtrar</button>
+                <button type="submit" class="filter-button">Filtrar</button><br><br>
+                <a href="?reset_filters=true"><button type="button" class="filter-button">Limpar filtros</button></a>
             </form>
         </div>
     </aside>
