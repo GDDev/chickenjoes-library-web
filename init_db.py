@@ -114,36 +114,55 @@ def init_db():
 
     user_id = db.users.insert_one(user).inserted_id
 
-    booking = Booking(
+    bookings = []
+    bookings.append(
+        Booking(
             customer_id=user_id, 
             booking_date=datetime(1997, 2, 20), 
             checkout_date=datetime(1997, 2, 21), 
             estimated_return_date=datetime(1997, 3, 23), 
             return_date=datetime(1997, 3, 24), 
             status='atrasado'
-        )
+        ))
     
-    booking = {
-        'customer_id': booking.customer_id,
-        'protocol': booking.protocol,
-        'status': 'atrasado',
-        'booking_date': booking.booking_date,
-        'estimated_checkout_date': booking.estimated_checkout_date,
-        'checkout_date': booking.checkout_date,
-        'estimated_return_date': booking.estimated_return_date,
-        'return_date': booking.return_date
-    }
-    booking_id = db.bookings.insert_one(booking).inserted_id
+    bookings.append(
+        Booking(
+            customer_id=user_id, 
+            booking_date=datetime(2024, 6, 9), 
+            checkout_date=datetime(2024, 6, 9), 
+            estimated_return_date=datetime(2024, 6, 10),
+            status='retirado'
+        ))
+    
+    bookings = [
+        {
+            'customer_id': booking.customer_id,
+            'protocol': booking.protocol,
+            'status': 'atrasado',
+            'booking_date': booking.booking_date,
+            'estimated_checkout_date': booking.estimated_checkout_date,
+            'checkout_date': booking.checkout_date,
+            'estimated_return_date': booking.estimated_return_date,
+            'return_date': booking.return_date
+        } for booking in bookings
+    ]
+    bookings_ids = db.bookings.insert_many(bookings).inserted_ids
 
-    book_in_booking = {
-        'booking_id': booking_id,
-        'book_id': books_ids[0]
-    }
-    db.book_in_booking.insert_one(book_in_booking)
+    book_in_booking = [
+        {
+            'booking_id': bookings_ids[0],
+            'book_id': books_ids[0]
+        },
+        {
+            'booking_id': bookings_ids[1],
+            'book_id': books_ids[1]
+        }
+    ]
+    db.book_in_booking.insert_many(book_in_booking)
 
     fine = Fine(
             customer_id=user_id, 
-            booking_id=booking_id,
+            booking_id=bookings_ids[0],
             created_date=datetime(1997, 3, 24), 
             fine_value=20.0
         )
@@ -151,6 +170,7 @@ def init_db():
     fine = {
         'customer_id': fine.customer_id,
         'booking_id': fine.booking_id,
+        'status': fine.status,
         'created_date': fine.created_date,
         'fine_value': fine.fine_value
     }

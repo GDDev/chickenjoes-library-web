@@ -393,7 +393,7 @@ button, input{
 }
 
 .nav-text{
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--dark-text);
     display: none;
     visibility: hidden;

@@ -1,16 +1,12 @@
 from bson import ObjectId
 from django.http.request import HttpRequest as HttpRequest
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.views import View
-from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth.models import User
-
 import copy
-
 from utils.dbconnect import connect
-
-from .models import UserProfile
+from booking.views import DispatchLoginRequiredMixin
+from .models import Fine, UserProfile
 from . import forms
 
 db = connect()
@@ -88,7 +84,7 @@ class Create(BasePerfil):
         self.request.session.save()
         return redirect('book:listbooks')
 
-class Update(BasePerfil):
+class Update(DispatchLoginRequiredMixin, BasePerfil):
     def post(self, *args, **kwargs):        
         username = self.request.POST.get('username')
         password = self.request.POST.get('password')
@@ -171,7 +167,7 @@ class Login(View):
 
         return redirect('book:cart')
 
-class Logout(View):
+class Logout(DispatchLoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         if self.request.session.get('logged_user'):
             if self.request.session.get('cart'):
@@ -183,3 +179,24 @@ class Logout(View):
                 UserProfile.logout(self.request)
         
         return redirect('book:listbooks')
+
+class ListFines(DispatchLoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        if self.request.session.get('logged_user'):
+            user = self.request.session['logged_user']['_id']
+            fines = list(db.fines.find({'customer_id': ObjectId(user)}))
+            fines = [
+                Fine(
+                    _id=fine['_id'], 
+                    customer_id=fine['customer_id'], 
+                    booking_id=fine['booking_id'], 
+                    status=fine['status'],
+                    created_date=fine['created_date'], 
+                    fine_value=fine['fine_value']
+                ) for fine in fines
+            ]
+
+        context = {
+            'fines': fines
+        }
+        return render(self.request, 'user_profile/fines.html', context)

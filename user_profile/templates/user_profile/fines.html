@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Multas
+{% endblock title %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Protocolo</th>
+                <th>Valor</th>
+                <th>Empréstimo</th>
+                <th>Andamento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fine in fines %}
+                <tr>
+                    <td>{{ fine.id }}</td>
+                    <td>{{ fine.fine_value }}</td>
+                    <td><a href="{% url 'booking:detail' fine.booking_id %}">Ver</a></td>
+                    <td>{{ fine.status }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+{% endblock content %}

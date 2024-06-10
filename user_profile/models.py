@@ -28,7 +28,8 @@ class UserProfile:
         if not isinstance(booking_id, ObjectId): booking_id = ObjectId(user_id)
         user = db.users.find_one({'_id': user_id})
         if user:
-            Fine(user_id, booking_id).save()
+            fine = Fine(user_id, booking_id)
+            fine.save()
             
     def save(self):
         user_data = {
@@ -101,9 +102,10 @@ class Fine:
             fine *= previous_fines
         return fine
 
-    def __init__(self, customer_id, booking_id, created_date=datetime.now(), fine_value=None, _id=None):
+    def __init__(self, customer_id, booking_id, status='a pagar', created_date=datetime.now(), fine_value=None, _id=None):
         self.customer_id = customer_id
         self.booking_id = booking_id
+        self.status = status
         self.created_date = created_date
         self.fine_value = fine_value or self.define_fine_value(self.customer_id)
         self.id = _id or ObjectId()
@@ -113,6 +115,7 @@ class Fine:
             '_id': self.id,
             'customer_id': self.customer_id,
             'booking_id': self.booking_id,
+            'status': self.status,
             'created_date': self.created_date,
             'fine_value': self.fine_value,
         }
