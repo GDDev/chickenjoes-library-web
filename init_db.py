@@ -33,7 +33,7 @@ def init_db():
             Book(
                 title=f'Livro #{i+1}', 
                 language='Pt-Br', 
-                publication_date=date(rand_year, rand_month, rand_day), 
+                publication_date=f'{date(rand_year, rand_month, rand_day)}', 
                 pages=random.randrange(50, 1000), 
                 size='12 x 19', 
                 publisher='Super Editora', 
