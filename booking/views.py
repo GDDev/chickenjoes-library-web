@@ -139,23 +139,7 @@ class Return(DispatchLoginRequiredMixin, View):
         books = [db.books.find_one({'_id': ObjectId(book['book_id'])}) for book in books_ids]
         for book in books:
             if book:
-                Book(
-                    book['title'], 
-                    book['language'], 
-                    book['publication_date'], 
-                    book['pages'], 
-                    book['size'], 
-                    book['publisher'], 
-                    book['isbn'], 
-                    book['inside_code'], 
-                    True, 
-                    book['edition_date'], 
-                    book['description'], 
-                    book['edition_number'], 
-                    image=book['image'], 
-                    slug=book['slug'], 
-                    _id=book['_id']
-                ).save()
+                db.books.update_one({'_id': book['_id']}, {'$set': {'availability': True}})
         if data:
             booking = Booking(
                 data['customer_id'], 

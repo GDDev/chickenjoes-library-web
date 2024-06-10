@@ -137,7 +137,29 @@ class Update(DispatchLoginRequiredMixin, BasePerfil):
         self.request.session.save()
         return redirect('userprofile:update')
 
-# TODO: Delete User
+class Delete(DispatchLoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        if self.request.session.get('logged_user'):
+            user = self.request.session['logged_user']['_id']
+
+            (it_can, errors) = UserProfile.can_user_be_deleted(user)
+            if errors:
+                for error in errors:
+                    messages.error(
+                        self.request,
+                        error
+                    )
+                return redirect('userprofile:update')
+            if it_can:
+                if not isinstance(user, ObjectId): user = ObjectId(user)
+                db.users.delete_one({'_id': user})
+                UserProfile.logout(self.request)
+                messages.success(
+                    self.request,
+                    'Conta deletada com sucesso.'
+                )
+                
+        return redirect('userprofile:createuser')
 
 class Login(View):
     def post(self, *args, **kwargs):
