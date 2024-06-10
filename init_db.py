@@ -118,20 +118,20 @@ def init_db():
     bookings.append(
         Booking(
             customer_id=user_id, 
+            booking_date=datetime(2024, 6, 9), 
+            checkout_date=datetime(2024, 6, 9), 
+            estimated_return_date=datetime(2024, 6, 10),
+            status='retirado'
+        ))
+
+    bookings.append(
+        Booking(
+            customer_id=user_id, 
             booking_date=datetime(1997, 2, 20), 
             checkout_date=datetime(1997, 2, 21), 
             estimated_return_date=datetime(1997, 3, 23), 
             return_date=datetime(1997, 3, 24), 
             status='atrasado'
-        ))
-    
-    bookings.append(
-        Booking(
-            customer_id=user_id, 
-            booking_date=datetime(2024, 6, 9), 
-            checkout_date=datetime(2024, 6, 9), 
-            estimated_return_date=datetime(2024, 6, 10),
-            status='retirado'
         ))
     
     bookings = [

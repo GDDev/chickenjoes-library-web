@@ -170,7 +170,7 @@ class SuggestedBook(Book):
             'user_id': self.user_id,
             'inside_code': self.inside_code,
             'availability': self.availability,
-            'title': f'(Sugestão) {self.title}',
+            'title': self.title,
             'description': self.description,
             'language': self.language,
             'publication_date': self.publication_date,
